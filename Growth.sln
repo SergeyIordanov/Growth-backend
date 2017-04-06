@@ -1,9 +1,13 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.26228.10
+VisualStudioVersion = 15.0.26403.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Growth.WEB", "Growth.WEB\Growth.WEB.csproj", "{DA526A8D-5F03-4FD1-A722-D00ABCEFFBCE}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Growth.BLL", "Growth.BLL\Growth.BLL.csproj", "{0780EF20-CD54-43E2-AB4A-F2528CE4723F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Growth.DAL", "Growth.DAL\Growth.DAL.csproj", "{63AC56A1-7580-49B1-B680-30D19410F814}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +19,14 @@ Global
 		{DA526A8D-5F03-4FD1-A722-D00ABCEFFBCE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DA526A8D-5F03-4FD1-A722-D00ABCEFFBCE}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{DA526A8D-5F03-4FD1-A722-D00ABCEFFBCE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0780EF20-CD54-43E2-AB4A-F2528CE4723F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0780EF20-CD54-43E2-AB4A-F2528CE4723F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0780EF20-CD54-43E2-AB4A-F2528CE4723F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0780EF20-CD54-43E2-AB4A-F2528CE4723F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{63AC56A1-7580-49B1-B680-30D19410F814}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{63AC56A1-7580-49B1-B680-30D19410F814}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{63AC56A1-7580-49B1-B680-30D19410F814}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{63AC56A1-7580-49B1-B680-30D19410F814}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

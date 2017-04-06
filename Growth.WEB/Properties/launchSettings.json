@@ -18,12 +18,12 @@
     },
     "Growth.WEB": {
       "commandName": "Project",
-      "launchBrowser": true,
-      "launchUrl": "api/values",
+      "launchBrowser": false,
+      "launchUrl": "api/me",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       },
-      "applicationUrl": "http://localhost:54632"
+      "applicationUrl": "http://localhost:5000"
     }
   }
 }
