@@ -1,10 +1,13 @@
-﻿using System.IO;
+﻿using System.Collections.Generic;
+using System.IO;
 using System.Text;
 using AutoMapper;
 using Growth.WEB.Authentication;
 using Growth.WEB.Authentication.Middlewares;
 using Growth.WEB.Filters;
 using Growth.WEB.Infrastructure.DI;
+using Growth.WEB.Infrastructure.Swagger;
+using Growth.WEB.Models.AccountApiModels;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -92,6 +95,15 @@ namespace Growth.WEB
 
                 options.IncludeXmlComments(filePath);
                 options.DescribeAllEnumsAsStrings();
+                options.AddSecurityDefinition("GrowthApi_oauth2", new OAuth2Scheme
+                {
+                    Description = "JWT autorization flow",
+                    Type = "oauth2",
+                    Flow = "Use url for receiving JWT token. Pass it into each request were it's needed",
+                    TokenUrl = "/api/token"
+                });
+                options.OperationFilter<ApplyOAuth2Security>();
+                options.DocumentFilter<ApplyOAuth2Security>();
             });
 
             services.AddMvc(options =>
@@ -123,15 +135,6 @@ namespace Growth.WEB
             loggerFactory.AddConsole(Configuration.GetSection("Logging"));
             loggerFactory.AddDebug();
 
-            app.UseMiddleware<TokenProviderMiddleware>(tokenProviderOptions);
-
-            app.UseJwtBearerAuthentication(new JwtBearerOptions
-            {
-                AutomaticAuthenticate = true,
-                AutomaticChallenge = true,
-                TokenValidationParameters = tokenValidationOptions.Value
-            });
-
             app.UseSwagger(c =>
             {
                 c.PreSerializeFilters.Add((swagger, httpReq) => swagger.Host = httpReq.Host.Value);
@@ -140,6 +143,15 @@ namespace Growth.WEB
             app.UseSwaggerUI(c =>
             {
                 c.SwaggerEndpoint("/swagger/v1/swagger.json", "V1 Docs");
+            });
+
+            app.UseMiddleware<TokenProviderMiddleware>(tokenProviderOptions);
+
+            app.UseJwtBearerAuthentication(new JwtBearerOptions
+            {
+                AutomaticAuthenticate = true,
+                AutomaticChallenge = true,
+                TokenValidationParameters = tokenValidationOptions.Value
             });
 
             app.UseMvc();
