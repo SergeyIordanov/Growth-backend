@@ -6,7 +6,7 @@ using Swashbuckle.AspNetCore.SwaggerGen;
 
 namespace Growth.WEB.Infrastructure.Swagger
 {
-    public class ApplyOAuth2Security : IDocumentFilter, IOperationFilter
+    public class ApplyOAuth2Security : IOperationFilter
     {
         public void Apply(Operation operation, OperationFilterContext context)
         {
@@ -28,17 +28,6 @@ namespace Growth.WEB.Infrastructure.Swagger
                     Type = "string"
                 });
             }
-        }
-
-        public void Apply(SwaggerDocument swaggerDoc, DocumentFilterContext context)
-        {
-            IList<IDictionary<string, IEnumerable<string>>> security = swaggerDoc.SecurityDefinitions.Select(securityDefinition => new Dictionary<string, IEnumerable<string>>
-            {
-                {securityDefinition.Key, new[] {"GrowthApi"}}
-            }).Cast<IDictionary<string, IEnumerable<string>>>().ToList();
-
-
-            swaggerDoc.Security = security;
         }
     }
 }

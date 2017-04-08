@@ -88,22 +88,16 @@ namespace Growth.WEB
                         Description = "A simple api of 'Growth' project",
                         TermsOfService = "None"
                     }
-                );
+                ); 
 
                 var pathToXmlDoc = Configuration["Swagger:FileName"];
                 var filePath = Path.Combine(PlatformServices.Default.Application.ApplicationBasePath, pathToXmlDoc);
 
                 options.IncludeXmlComments(filePath);
                 options.DescribeAllEnumsAsStrings();
-                options.AddSecurityDefinition("GrowthApi_oauth2", new OAuth2Scheme
-                {
-                    Description = "JWT autorization flow",
-                    Type = "oauth2",
-                    Flow = "Use url for receiving JWT token. Pass it into each request were it's needed",
-                    TokenUrl = "/api/token"
-                });
+
                 options.OperationFilter<ApplyOAuth2Security>();
-                options.DocumentFilter<ApplyOAuth2Security>();
+                options.DocumentFilter<ApplyTokenProvider>();
             });
 
             services.AddMvc(options =>
