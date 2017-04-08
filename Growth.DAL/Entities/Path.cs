@@ -15,7 +15,7 @@ namespace Growth.DAL.Entities
 
         public string Description { get; set; }
 
-        public IEnumerable<Goal> Goals { get; set; }
+        public IList<Goal> Goals { get; set; }
 
         public override string CollectionName => "paths";
     }

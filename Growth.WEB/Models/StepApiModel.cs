@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel.DataAnnotations;
 
 namespace Growth.WEB.Models
 {
@@ -15,6 +16,7 @@ namespace Growth.WEB.Models
         /// <summary>
         /// Step text
         /// </summary>
+        [Required]
         public string Text { get; set; }
 
         /// <summary>

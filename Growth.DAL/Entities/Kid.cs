@@ -18,7 +18,9 @@ namespace Growth.DAL.Entities
 
         public Guid UserId { get; set; }
 
-        public IEnumerable<Path> Paths { get; set; }
+        public byte[] Photo { get; set; }
+
+        public IList<Path> Paths { get; set; }
 
         public override string CollectionName => "kids";
     }

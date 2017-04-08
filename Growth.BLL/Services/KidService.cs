@@ -31,9 +31,9 @@ namespace Growth.BLL.Services
 
         public async Task<KidDto> GetAsync(Guid userId, Guid kidId)
         {
-            var kid = await _unitOfWork.Kids.GetAsync(userId, kidId);
+            var kid = await _unitOfWork.Kids.GetAsync(kidId);
 
-            if (kid == null)
+            if (kid == null || kid.UserId != userId)
             {
                 throw new EntityNotFoundException(
                     $"Cannot find kid with such id for current user. User id: {userId}. Kid id: {kidId}",
@@ -56,23 +56,25 @@ namespace Growth.BLL.Services
             }
 
             var kid = _mapper.Map<Kid>(kidDto);
-            var id = await _unitOfWork.Kids.CreateAsync(userId, kid);
+            kid.UserId = userId;
+
+            var id = await _unitOfWork.Kids.CreateAsync(kid);
 
             return id;
         }
 
         public async Task DeleteAsync(Guid userId, Guid kidId)
         {
-            var kid = await _unitOfWork.Kids.GetAsync(userId, kidId);
+            var kid = await _unitOfWork.Kids.GetAsync(kidId);
 
-            if (kid == null)
+            if (kid == null || kid.UserId != userId)
             {
                 throw new EntityNotFoundException(
                     $"Cannot find kid with such id for current user. User id: {userId}. Kid id: {kidId}",
                     "Kid");
             }
 
-            await _unitOfWork.Kids.DeleteAsync(userId, kidId);
+            await _unitOfWork.Kids.DeleteAsync(kidId);
         }
     }
 }

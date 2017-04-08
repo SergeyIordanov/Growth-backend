@@ -90,30 +90,6 @@ namespace Growth.WEB.Controllers
         }
 
         /// <summary>
-        /// Updates a kid
-        /// </summary>
-        /// <param name="id">Kid id</param>
-        /// <param name="kidApiModel">Kid model</param>
-        [HttpPut("{id}")]
-        [SwaggerResponse((int)HttpStatusCode.OK, Description = "Success")]
-        [SwaggerResponse((int)HttpStatusCode.BadRequest, Description = "Invalid model")]
-        public async Task<IActionResult> Put(Guid id, [FromBody] KidApiModel kidApiModel)
-        {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
-            var kidDto = _mapper.Map<KidDto>(kidApiModel);
-
-            var updatedId = await _kidService.CreateAsync(CurrentUserId, kidDto);
-
-            _logger.LogInformation($"Kid {kidApiModel.Name} was updated. Id: {updatedId}");
-
-            return Ok(updatedId);
-        }
-
-        /// <summary>
         /// Deletes kid with id 
         /// </summary>
         /// <param name="id">Kid id</param>

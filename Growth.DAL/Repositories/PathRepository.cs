@@ -11,7 +11,6 @@ namespace Growth.DAL.Repositories
 {
     public class PathRepository : IPathRepository
     {
-        private const int FilteredElementIndex = -1;
         private readonly IDbContext _context;
 
         public PathRepository(IDbContext context)
@@ -33,18 +32,15 @@ namespace Growth.DAL.Repositories
         public async Task<Path> GetAsync(Guid kidId, Guid pathId)
         {
             var filterByKid = Builders<Kid>.Filter.Eq(kid => kid.Id, BsonBinaryData.Create(kidId));
-            var filterById = Builders<Kid>.Filter.Eq(
-                kid => kid.Paths.ElementAtOrDefault(FilteredElementIndex) != null
-                    ? kid.Paths.ElementAt(FilteredElementIndex).Id
-                    : Guid.Empty,
-                pathId);
 
             var projectedKid = await _context.GetCollection<Kid>()
-                .Find(filterByKid & filterById)
+                .Find(filterByKid)
                 .Project<Kid>(Builders<Kid>.Projection.Include(t => t.Paths))
                 .FirstOrDefaultAsync();
 
-            return projectedKid?.Paths?.FirstOrDefault();
+            var resultPath = projectedKid?.Paths?.FirstOrDefault(path => path.Id == pathId);
+
+            return resultPath;
         }
 
         public async Task<Guid> CreateAsync(Guid kidId, Path path)
@@ -58,35 +54,25 @@ namespace Growth.DAL.Repositories
             return path.Id;
         }
 
-        public async Task<Guid> UpdateAsync(Guid kidId, Path path)
+        public async Task<Guid> UpdateAsync(Path path)
         {
-            var filterByKid = Builders<Kid>.Filter.Eq(kid => kid.Id, BsonBinaryData.Create(kidId));
-            var filterById = Builders<Kid>.Filter.Eq(
-                kid => kid.Paths.ElementAtOrDefault(FilteredElementIndex) != null
-                    ? kid.Paths.ElementAt(FilteredElementIndex).Id
-                    : Guid.Empty,
-                path.Id);
+            var filter = Builders<Kid>.Filter.Eq("Paths._id", BsonBinaryData.Create(path.Id));
 
             var update = Builders<Kid>.Update
-                .Set(x => x.Paths.ElementAtOrDefault(FilteredElementIndex), path);
+                .Set("Paths.$.Title", path.Title)
+                .Set("Paths.$.Description", path.Description);
 
-            await _context.GetCollection<Kid>().UpdateOneAsync(filterByKid & filterById, update);
+            await _context.GetCollection<Kid>().UpdateOneAsync(filter, update);
 
             return path.Id;
         }
 
-        public Task DeleteAsync(Guid kidId, Guid pathId)
+        public Task DeleteAsync(Guid pathId)
         {
-            var filterByKid = Builders<Kid>.Filter.Eq(kid => kid.Id, BsonBinaryData.Create(kidId));
-            var filterById = Builders<Kid>.Filter.Eq(
-                kid => kid.Paths.ElementAtOrDefault(FilteredElementIndex) != null
-                    ? kid.Paths.ElementAt(FilteredElementIndex).Id
-                    : Guid.Empty,
-                pathId);
+            var update = Builders<Kid>.Update.PullFilter(kid => kid.Paths, path => path.Id.Equals(pathId));
+            var filter = Builders<Kid>.Filter.Eq("Paths._id", BsonBinaryData.Create(pathId));
 
-            var update = Builders<Kid>.Update.PullFilter(p => p.Paths, f => f.Id.Equals(pathId));
-
-            return _context.GetCollection<Kid>().FindOneAndUpdateAsync(filterByKid & filterById, update);
+            return _context.GetCollection<Kid>().FindOneAndUpdateAsync(filter, update);
         }
     }
 }

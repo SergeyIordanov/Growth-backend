@@ -82,7 +82,7 @@ namespace Growth.BLL.Services
                 _roleService.CreateAsync("user");
             }
 
-            user.Roles = user.Roles.Append("user");
+            user.Roles.Add("user");
         }
     }
 }

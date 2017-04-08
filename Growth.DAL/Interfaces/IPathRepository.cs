@@ -13,8 +13,8 @@ namespace Growth.DAL.Interfaces
 
         Task<Guid> CreateAsync(Guid kidId, Path path);
 
-        Task<Guid> UpdateAsync(Guid kidId, Path path);
+        Task<Guid> UpdateAsync(Path path);
 
-        Task DeleteAsync(Guid kidId, Guid pathId);
+        Task DeleteAsync(Guid pathId);
     }
 }

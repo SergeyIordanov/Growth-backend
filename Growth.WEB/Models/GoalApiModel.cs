@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel.DataAnnotations;
 
 namespace Growth.WEB.Models
 {
@@ -15,6 +16,7 @@ namespace Growth.WEB.Models
         /// <summary>
         /// Goal title
         /// </summary>
+        [Required]
         public string Title { get; set; }
 
         /// <summary>

@@ -9,10 +9,10 @@ namespace Growth.DAL.Interfaces
     {
         Task<IEnumerable<Kid>> GetByUserAsync(Guid userId);
 
-        Task<Kid> GetAsync(Guid userId, Guid kidId);
+        Task<Kid> GetAsync(Guid kidId);
 
-        Task<Guid> CreateAsync(Guid userId, Kid kid);
+        Task<Guid> CreateAsync(Kid kid);
 
-        Task DeleteAsync (Guid userId, Guid kidId);
+        Task DeleteAsync(Guid kidId);
     }
 }

@@ -6,8 +6,16 @@ using Swashbuckle.AspNetCore.SwaggerGen;
 
 namespace Growth.WEB.Infrastructure.Swagger
 {
+    /// <summary>
+    /// Operation filter for adding an authorization header field
+    /// </summary>
     public class ApplyOAuth2Security : IOperationFilter
     {
+        /// <summary>
+        /// Applies operation filter
+        /// </summary>
+        /// <param name="operation">Operation to apply filter</param>
+        /// <param name="context">Operation filter context</param>
         public void Apply(Operation operation, OperationFilterContext context)
         {
             var filterPipeline = context.ApiDescription.ActionDescriptor.FilterDescriptors;

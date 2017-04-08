@@ -63,7 +63,7 @@ namespace Growth.BLL.Services
 
             var roleDto = _roleService.Get(role);
 
-            user.Roles = user.Roles.Append(roleDto.Name);
+            user.Roles.Add(roleDto.Name);
 
             await _unitOfWork.Users.UpdateAsync(user);
 
@@ -88,7 +88,7 @@ namespace Growth.BLL.Services
                     "Role");
             }
 
-            user.Roles = user.Roles.Where(roleName => !roleName.Equals(role));
+            user.Roles = user.Roles.Where(roleName => !roleName.Equals(role)).ToList();
 
             await _unitOfWork.Users.UpdateAsync(user);
 

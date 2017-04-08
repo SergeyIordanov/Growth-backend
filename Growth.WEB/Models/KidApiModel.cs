@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel.DataAnnotations;
 
 namespace Growth.WEB.Models
 {
@@ -8,18 +9,25 @@ namespace Growth.WEB.Models
     public class KidApiModel
     {
         /// <summary>
+        /// Kid's id
+        /// </summary>
+        public Guid Id { get; set; }
+
+        /// <summary>
         /// Kid name
         /// </summary>
+        [Required]
         public string Name { get; set; }
 
         /// <summary>
         /// Kid's gender (Male or Female)
         /// </summary>
+        [Required]
         public string Gender { get; set; }
 
         /// <summary>
-        /// Parent user id
+        /// Kid's photo represented as byte array
         /// </summary>
-        public Guid UserId { get; set; }
+        public byte[] Photo { get; set; }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel.DataAnnotations;
 
 namespace Growth.WEB.Models
 {
@@ -15,11 +16,13 @@ namespace Growth.WEB.Models
         /// <summary>
         /// Path title
         /// </summary>
+        [Required]
         public string Title { get; set; }
 
         /// <summary>
         /// Path description
         /// </summary>
+        [Required]
         public string Description { get; set; }
 
     }

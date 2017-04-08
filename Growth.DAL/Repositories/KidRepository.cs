@@ -24,17 +24,16 @@ namespace Growth.DAL.Repositories
             return kids.ToEnumerable();
         }
 
-        public async Task<Kid> GetAsync(Guid userId, Guid kidId)
+        public async Task<Kid> GetAsync(Guid kidId)
         {
-            var filterByUser = Builders<Kid>.Filter.Eq(kid => kid.UserId, userId);
             var filterById = Builders<Kid>.Filter.Eq(kid => kid.Id, kidId);
 
-            var kids = await _context.GetCollection<Kid>().FindAsync(filterByUser & filterById);
+            var kids = await _context.GetCollection<Kid>().FindAsync(filterById);
 
             return kids.FirstOrDefault();
         }
 
-        public async Task<Guid> CreateAsync(Guid userId, Kid kid)
+        public async Task<Guid> CreateAsync(Kid kid)
         {
             var collection = _context.GetCollection<Kid>();
             kid.Id = Guid.NewGuid();
@@ -44,11 +43,11 @@ namespace Growth.DAL.Repositories
             return kid.Id;
         }
 
-        public Task DeleteAsync(Guid userId, Guid kidId)
+        public Task DeleteAsync(Guid kidId)
         {
             var collection = _context.GetCollection<Kid>();
 
-            return collection.DeleteOneAsync(entity => entity.UserId.Equals(userId) && entity.Id.Equals(kidId));
+            return collection.DeleteOneAsync(entity => entity.Id.Equals(kidId));
         }
     }
 }

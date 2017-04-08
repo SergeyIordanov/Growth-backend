@@ -19,7 +19,7 @@ namespace Growth.DAL.Entities
 
         public string GoalMonth { get; set; }
 
-        public IEnumerable<Step> Steps { get; set; }
+        public IList<Step> Steps { get; set; }
 
         public override string CollectionName => "goals";
     }

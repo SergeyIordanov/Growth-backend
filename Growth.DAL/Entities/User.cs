@@ -17,7 +17,7 @@ namespace Growth.DAL.Entities
 
         public string PasswordHash { get; set; }
 
-        public IEnumerable<string> Roles { get; set; }
+        public IList<string> Roles { get; set; }
 
         public override string CollectionName => "users";
     }
