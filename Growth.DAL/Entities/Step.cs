@@ -6,6 +6,6 @@
 
         public bool Completed { get; set; }
 
-        public override string CollectionName => "steps";
+        public override string CollectionName => "Steps";
     }
 }

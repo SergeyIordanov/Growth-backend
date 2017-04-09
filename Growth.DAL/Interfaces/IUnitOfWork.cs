@@ -11,5 +11,9 @@ namespace Growth.DAL.Interfaces
         IKidRepository Kids { get; }
 
         IPathRepository Paths { get; }
+
+        IGoalRepository Goals { get; }
+
+        IStepRepository Steps { get; }
     }
 }

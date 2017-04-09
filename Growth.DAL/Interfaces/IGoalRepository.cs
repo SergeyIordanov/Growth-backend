@@ -7,14 +7,14 @@ namespace Growth.DAL.Interfaces
 {
     public interface IGoalRepository
     {
-        Task<IEnumerable<Goal>> GetByPathAsync(Guid kidId, Guid pathId);
+        Task<IEnumerable<Goal>> GetByPathAsync(Guid pathId);
 
-        Task<Goal> GetAsync(Guid kidId, Guid pathId, Guid goalId);
+        Task<Goal> GetAsync(Guid pathId, Guid goalId);
 
-        Task<Guid> CreateAsync(Guid kidId, Guid pathId, Goal goal);
+        Task<Guid> CreateAsync(Guid pathId, Goal goal);
 
-        Task<Guid> UpdateAsync(Guid kidId, Guid pathId, Goal goal);
+        Task<Guid> UpdateAsync(Guid pathId, Goal goal);
 
-        Task DeleteAsync(Guid kidId, Guid pathId, Guid goalId);
+        Task DeleteAsync(Guid goalId);
     }
 }

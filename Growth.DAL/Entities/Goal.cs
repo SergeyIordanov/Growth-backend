@@ -21,6 +21,6 @@ namespace Growth.DAL.Entities
 
         public IList<Step> Steps { get; set; }
 
-        public override string CollectionName => "goals";
+        public override string CollectionName => "Goals";
     }
 }

@@ -28,6 +28,8 @@ namespace Growth.WEB.Infrastructure.DI
             services.AddTransient<IAccountService, AccountService>();
             services.AddTransient<IKidService, KidService>();
             services.AddTransient<IPathService, PathService>();
+            services.AddTransient<IGoalService, GoalService>();
+            services.AddTransient<IStepService, StepService>();
             services.AddTransient<ICryptoProvider, MD5CryptoProvider>();
             services.AddTransient<IIdentityProvider, IdentityProvider>();
 

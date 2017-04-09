@@ -11,6 +11,8 @@ namespace Growth.DAL.Repositories
 {
     public class PathRepository : IPathRepository
     {
+        private const string IdFieldName = "_id";
+        private readonly string _pathCollectionName = new Path().CollectionName;
         private readonly IDbContext _context;
 
         public PathRepository(IDbContext context)
@@ -31,10 +33,13 @@ namespace Growth.DAL.Repositories
 
         public async Task<Path> GetAsync(Guid kidId, Guid pathId)
         {
-            var filterByKid = Builders<Kid>.Filter.Eq(kid => kid.Id, BsonBinaryData.Create(kidId));
+            var filterByKid = Builders<Kid>.Filter
+                .Eq(kid => kid.Id, BsonBinaryData.Create(kidId));
+            var filterByPath = Builders<Kid>.Filter
+                .Eq($"{_pathCollectionName}.{IdFieldName}", BsonBinaryData.Create(pathId));
 
             var projectedKid = await _context.GetCollection<Kid>()
-                .Find(filterByKid)
+                .Find(filterByKid & filterByPath)
                 .Project<Kid>(Builders<Kid>.Projection.Include(t => t.Paths))
                 .FirstOrDefaultAsync();
 
@@ -56,11 +61,12 @@ namespace Growth.DAL.Repositories
 
         public async Task<Guid> UpdateAsync(Path path)
         {
-            var filter = Builders<Kid>.Filter.Eq("Paths._id", BsonBinaryData.Create(path.Id));
+            var filter = Builders<Kid>.Filter
+                .Eq($"{_pathCollectionName}.{IdFieldName}", BsonBinaryData.Create(path.Id));
 
             var update = Builders<Kid>.Update
-                .Set("Paths.$.Title", path.Title)
-                .Set("Paths.$.Description", path.Description);
+                .Set($"{_pathCollectionName}.$.Title", path.Title)
+                .Set($"{_pathCollectionName}.$.Description", path.Description);
 
             await _context.GetCollection<Kid>().UpdateOneAsync(filter, update);
 
@@ -69,8 +75,10 @@ namespace Growth.DAL.Repositories
 
         public Task DeleteAsync(Guid pathId)
         {
-            var update = Builders<Kid>.Update.PullFilter(kid => kid.Paths, path => path.Id.Equals(pathId));
-            var filter = Builders<Kid>.Filter.Eq("Paths._id", BsonBinaryData.Create(pathId));
+            var update = Builders<Kid>.Update
+                .PullFilter(kid => kid.Paths, path => path.Id.Equals(pathId));
+            var filter = Builders<Kid>.Filter
+                .Eq($"{_pathCollectionName}.{IdFieldName}", BsonBinaryData.Create(pathId));
 
             return _context.GetCollection<Kid>().FindOneAndUpdateAsync(filter, update);
         }

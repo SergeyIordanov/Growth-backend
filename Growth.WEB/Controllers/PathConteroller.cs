@@ -57,7 +57,7 @@ namespace Growth.WEB.Controllers
         /// <summary>
         /// Returns all paths for specified kid
         /// </summary>
-        /// /// <param name="kidId">Kid id</param>
+        /// <param name="kidId">Kid id</param>
         [HttpGet]
         [SwaggerResponse((int)HttpStatusCode.OK, Description = "List of all paths for specified kid")]
         public async Task<IActionResult> Get(Guid kidId)
@@ -123,7 +123,7 @@ namespace Growth.WEB.Controllers
         /// <param name="kidId">Kid id</param>
         [HttpDelete("{id}")]
         [SwaggerResponse((int)HttpStatusCode.OK, Description = "Success")]
-        [SwaggerResponse((int)HttpStatusCode.NotFound, Description = "Kid with such id doesn't exist")]
+        [SwaggerResponse((int)HttpStatusCode.NotFound, Description = "Path with such id doesn't exist")]
         public async Task<IActionResult> Delete(Guid kidId, Guid id)
         {
             await _pathService.DeleteAsync(kidId, id);

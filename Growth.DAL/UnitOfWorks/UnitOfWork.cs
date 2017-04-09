@@ -15,6 +15,10 @@ namespace Growth.DAL.UnitOfWorks
 
         private readonly Lazy<IPathRepository> _pathRepository;
 
+        private readonly Lazy<IGoalRepository> _goalRepository;
+
+        private readonly Lazy<IStepRepository> _stepRepository;
+
         public UnitOfWork(IDbContext context)
         {
             var db = context;
@@ -22,6 +26,8 @@ namespace Growth.DAL.UnitOfWorks
             _roleRepository = new Lazy<IRepository<Role>>(() => new CommonRepository<Role>(db));
             _kidRepository = new Lazy<IKidRepository>(() => new KidRepository(db));
             _pathRepository = new Lazy<IPathRepository>(() => new PathRepository(db));
+            _goalRepository = new Lazy<IGoalRepository>(() => new GoalRepository(db));
+            _stepRepository = new Lazy<IStepRepository>(() => new StepRepository(db));
         }
 
         public IRepository<User> Users => _userRepository.Value;
@@ -31,5 +37,9 @@ namespace Growth.DAL.UnitOfWorks
         public IKidRepository Kids => _kidRepository.Value;
 
         public IPathRepository Paths => _pathRepository.Value;
+
+        public IGoalRepository Goals => _goalRepository.Value;
+
+        public IStepRepository Steps => _stepRepository.Value;
     }
 }

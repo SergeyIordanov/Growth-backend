@@ -11,7 +11,10 @@ namespace Growth.DAL.Repositories
 {
     public class GoalRepository : IGoalRepository
     {
+        private const string IdFieldName = "_id";
         private const int FilteredElementIndex = -1;
+        private readonly string _pathCollectionName = new Path().CollectionName;
+        private readonly string _goalCollectionName = new Goal().CollectionName;
         private readonly IDbContext _context;
 
         public GoalRepository(IDbContext context)
@@ -19,44 +22,68 @@ namespace Growth.DAL.Repositories
             _context = context;
         }
 
-        public async Task<IEnumerable<Goal>> GetByPathAsync(Guid kidId, Guid pathId)
+        public async Task<IEnumerable<Goal>> GetByPathAsync(Guid pathId)
         {
-            var filterByKid = Builders<Kid>.Filter.Eq(kid => kid.Id, BsonBinaryData.Create(kidId));
-            var filterByPath = Builders<Kid>.Filter.Eq(
-                kid => kid.Paths.ElementAtOrDefault(FilteredElementIndex) != null
-                    ? kid.Paths.ElementAt(FilteredElementIndex).Id
-                    : Guid.Empty,
-                pathId);
+            var filterByPath = Builders<Kid>.Filter
+                .Eq($"{_pathCollectionName}.{IdFieldName}", BsonBinaryData.Create(pathId));
 
             var projectedKid = await _context.GetCollection<Kid>()
-                .Find(filterByKid & filterByPath).FirstOrDefaultAsync();
+                .Find(filterByPath)
+                .Project<Kid>(Builders<Kid>.Projection.Include(t => t.Paths))
+                .FirstOrDefaultAsync();
 
-            if (projectedKid?.Paths?.FirstOrDefault() == null)
-            {
-                return new List<Goal>();
-            }
+            var path = projectedKid?.Paths?.FirstOrDefault(p => p.Id == pathId);
 
-            return projectedKid.Paths.First().Goals;
+            return path?.Goals ?? new List<Goal>();
         }
 
-        public Task<Goal> GetAsync(Guid kidId, Guid pathId, Guid goalId)
+        public async Task<Goal> GetAsync(Guid pathId, Guid goalId)
         {
-            throw new NotImplementedException();
+            var filterByPath = Builders<Kid>.Filter
+                .Eq($"{_pathCollectionName}.{IdFieldName}", BsonBinaryData.Create(pathId));
+            var filterById = Builders<Kid>.Filter
+                .Eq($"{_pathCollectionName}.{_goalCollectionName}.{IdFieldName}", BsonBinaryData.Create(goalId));
+
+            var projectedKid = await _context.GetCollection<Kid>()
+                .Find(filterByPath & filterById)
+                .Project<Kid>(Builders<Kid>.Projection.Include(t => t.Paths))
+                .FirstOrDefaultAsync();
+
+            var path = projectedKid?.Paths?.FirstOrDefault(p => p.Id == pathId);
+
+            return path?.Goals?.FirstOrDefault(goal => goal.Id == goalId);
         }
 
-        public Task<Guid> CreateAsync(Guid kidId, Guid pathId, Goal goal)
+        public async Task<Guid> CreateAsync(Guid pathId, Goal goal)
         {
-            throw new NotImplementedException();
+            goal.Id = Guid.NewGuid();
+
+            var filter = Builders<Kid>.Filter
+                .Eq($"{_pathCollectionName}.{IdFieldName}", BsonBinaryData.Create(pathId));
+            var update = Builders<Kid>.Update
+                .Push($"{_pathCollectionName}.$.{_goalCollectionName}", goal);
+
+            await _context.GetCollection<Kid>().UpdateOneAsync(filter, update);
+
+            return goal.Id;
         }
 
-        public Task<Guid> UpdateAsync(Guid kidId, Guid pathId, Goal goal)
+        public async Task<Guid> UpdateAsync(Guid pathId, Goal goal)
         {
-            throw new NotImplementedException();
+            await DeleteAsync(goal.Id);
+            await CreateAsync(pathId, goal);
+
+            return goal.Id;
         }
 
-        public Task DeleteAsync(Guid kidId, Guid pathId, Guid goalId)
+        public Task DeleteAsync(Guid goalId)
         {
-            throw new NotImplementedException();
+            var update = Builders<Kid>.Update
+                .PullFilter(kid => kid.Paths[FilteredElementIndex].Goals, f => f.Id.Equals(goalId));
+            var filter = Builders<Kid>.Filter
+                .Eq($"{_pathCollectionName}.{_goalCollectionName}.{IdFieldName}", BsonBinaryData.Create(goalId));
+
+            return _context.GetCollection<Kid>().FindOneAndUpdateAsync(filter, update);
         }
     }
 }
