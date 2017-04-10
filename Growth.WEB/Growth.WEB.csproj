@@ -5,7 +5,13 @@
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-    <DocumentationFile>bin\Debug\netcoreapp1.1\Growth.WEB.xml</DocumentationFile>
+    <DocumentationFile>XmlDocs\Growth.xml</DocumentationFile>
+    <OutputPath>XmlDocs\</OutputPath>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <DocumentationFile>XmlDocs\Growth.xml</DocumentationFile>
+    <OutputPath>XmlDocs\</OutputPath>
   </PropertyGroup>
 
   <ItemGroup>
@@ -15,6 +21,11 @@
   <ItemGroup>
     <None Update="NLog.config">
       <Link>NLog.config</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </None>
+    <None Update="Growth.xml">
+      <Link>XmlDocs\Growth.xml</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
     </None>

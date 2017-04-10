@@ -1,0 +1,723 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Growth.WEB</name>
+    </assembly>
+    <members>
+        <member name="T:Growth.WEB.Authentication.IdentityProvider">
+            <summary>
+            Implementation of IIdentityProvider for providing user's identity
+            </summary>
+        </member>
+        <member name="M:Growth.WEB.Authentication.IdentityProvider.#ctor(Growth.BLL.Interfaces.IAccountService,AutoMapper.IMapper)">
+            <summary>
+            Constructor
+            </summary>
+            <param name="accountService">Instance IAccountService interface that provides operations with user account</param>
+            <param name="mapper">AutoMapper instance</param>
+        </member>
+        <member name="M:Growth.WEB.Authentication.IdentityProvider.GetIdentity(Growth.WEB.Models.AccountApiModels.LoginApiModel)">
+            <summary>
+            Provides user's identity by login model
+            </summary>
+            <param name="loginApiModel">Contains credentials for signing in</param>
+            <returns>User identity with claims</returns>
+        </member>
+        <member name="T:Growth.WEB.Authentication.Interfaces.IIdentityProvider">
+            <summary>
+            Interface for providing identity for user (login)
+            </summary>
+        </member>
+        <member name="M:Growth.WEB.Authentication.Interfaces.IIdentityProvider.GetIdentity(Growth.WEB.Models.AccountApiModels.LoginApiModel)">
+            <summary>
+            Provides user's identity by login model
+            </summary>
+            <param name="loginApiModel">Contains credentials for signing in</param>
+            <returns>User identity with claims</returns>
+        </member>
+        <member name="T:Growth.WEB.Authentication.Middlewares.TokenProviderMiddleware">
+            <summary>
+            Middleware that provides JWT tokens
+            </summary>
+        </member>
+        <member name="M:Growth.WEB.Authentication.Middlewares.TokenProviderMiddleware.#ctor(Microsoft.AspNetCore.Http.RequestDelegate,Microsoft.Extensions.Options.IOptions{Growth.WEB.Authentication.TokenProviderOptions},Growth.WEB.Authentication.Interfaces.IIdentityProvider)">
+            <summary>
+            Constructor
+            </summary>
+            <param name="next">Next middleware</param>
+            <param name="options">Token provider options</param>
+            <param name="identityProvider">Implementation of IIdentityProvider for receiving user's identity</param>
+        </member>
+        <member name="M:Growth.WEB.Authentication.Middlewares.TokenProviderMiddleware.Invoke(Microsoft.AspNetCore.Http.HttpContext)">
+            <summary>
+            Invokes middleware
+            </summary>
+            <param name="context">Http context</param>
+            <returns></returns>
+        </member>
+        <member name="T:Growth.WEB.Authentication.TokenProviderOptions">
+            <summary>
+            Options for configuring JWT tokens providing
+            </summary>
+        </member>
+        <member name="M:Growth.WEB.Authentication.TokenProviderOptions.#ctor">
+            <summary>
+            Constructor
+            </summary>
+        </member>
+        <member name="P:Growth.WEB.Authentication.TokenProviderOptions.SecretKey">
+            <summary>
+            Secret key for symmetric encription
+            </summary>
+        </member>
+        <member name="P:Growth.WEB.Authentication.TokenProviderOptions.Path">
+            <summary>
+            Route for receiving a JWT token
+            </summary>
+        </member>
+        <member name="P:Growth.WEB.Authentication.TokenProviderOptions.Issuer">
+            <summary>
+            Tokens' provider name
+            </summary>
+        </member>
+        <member name="P:Growth.WEB.Authentication.TokenProviderOptions.Audience">
+            <summary>
+            The audience for receiving JWT token
+            </summary>
+        </member>
+        <member name="P:Growth.WEB.Authentication.TokenProviderOptions.Expiration">
+            <summary>
+            Time of token's expiration
+            </summary>
+        </member>
+        <member name="P:Growth.WEB.Authentication.TokenProviderOptions.SigningCredentials">
+            <summary>
+            Signing credentials
+            </summary>
+        </member>
+        <member name="T:Growth.WEB.Controllers.AccountController">
+            <summary>
+            Controller that implements account managing operations
+            </summary>
+        </member>
+        <member name="M:Growth.WEB.Controllers.AccountController.#ctor(Growth.BLL.Interfaces.IAccountService,AutoMapper.IMapper,Microsoft.Extensions.Logging.ILogger{Growth.WEB.Controllers.AccountController})">
+            <summary>
+            Constructor
+            </summary>
+            <param name="accountService">Instance IAccountService interface that provides operations with user account</param>
+            <param name="mapper">AutoMapper instance</param>
+            <param name="logger">Logger</param>
+        </member>
+        <member name="M:Growth.WEB.Controllers.AccountController.Register(Growth.WEB.Models.AccountApiModels.RegisterApiModel)">
+            <summary>
+            Registers a new user
+            </summary>
+            <param name="model">Contains user's login, password, name</param>
+        </member>
+        <member name="T:Growth.WEB.Controllers.BaseController">
+            <summary>
+            Basic controller with common operations
+            </summary>
+        </member>
+        <member name="P:Growth.WEB.Controllers.BaseController.CurrentUserId">
+            <summary>
+            Gets current user id if exists or throws ServiceException
+            </summary>
+        </member>
+        <member name="T:Growth.WEB.Controllers.GoalController">
+            <summary>
+            Controller for goals management
+            </summary>
+        </member>
+        <member name="M:Growth.WEB.Controllers.GoalController.#ctor(Growth.BLL.Interfaces.IGoalService,AutoMapper.IMapper,Microsoft.Extensions.Logging.ILogger{Growth.WEB.Controllers.KidController})">
+            <summary>
+            Constructor
+            </summary>
+            <param name="goalService">Instance IGoalService interface that provides operations with goals</param>
+            <param name="mapper">AutoMapper instance</param>
+            <param name="logger">Logger</param>
+        </member>
+        <member name="M:Growth.WEB.Controllers.GoalController.Get(System.Guid,System.Guid,System.Guid)">
+            <summary>
+            Returns goal with id
+            </summary>
+            <param name="kidId">Kid id</param>
+            <param name="pathId">Path id</param>
+            <param name="id">Goal id</param>
+        </member>
+        <member name="M:Growth.WEB.Controllers.GoalController.Get(System.Guid,System.Guid)">
+            <summary>
+            Returns all goals for specified path
+            </summary>
+            <param name="kidId">Kid id</param>
+            <param name="pathId">Path id</param>
+        </member>
+        <member name="M:Growth.WEB.Controllers.GoalController.Post(System.Guid,System.Guid,Growth.WEB.Models.GoalApiModel)">
+            <summary>
+            Creates new goal
+            </summary>
+            <param name="kidId">Kid id</param>
+            <param name="pathId">Path id</param>
+            <param name="goalApiModel">Goal model</param>
+        </member>
+        <member name="M:Growth.WEB.Controllers.GoalController.Put(System.Guid,System.Guid,Growth.WEB.Models.GoalApiModel)">
+            <summary>
+            Updates a goal
+            </summary>
+            <param name="kidId">Kid id</param>
+            <param name="pathId">Path id</param>
+            <param name="goalApiModel">Goal model</param>
+        </member>
+        <member name="M:Growth.WEB.Controllers.GoalController.Delete(System.Guid,System.Guid,System.Guid)">
+            <summary>
+            Deletes goal with id 
+            </summary>
+            <param name="kidId">Kid id</param>
+            <param name="pathId">Path id</param>
+            <param name="id">Goal id</param>
+        </member>
+        <member name="T:Growth.WEB.Controllers.KidController">
+            <summary>
+            Controller for kids management
+            </summary>
+        </member>
+        <member name="M:Growth.WEB.Controllers.KidController.#ctor(Growth.BLL.Interfaces.IKidService,AutoMapper.IMapper,Microsoft.Extensions.Logging.ILogger{Growth.WEB.Controllers.KidController})">
+            <summary>
+            Constructor
+            </summary>
+            <param name="kidService">Instance IKidService interface that provides operations with kids</param>
+            <param name="mapper">AutoMapper instance</param>
+            <param name="logger">Logger</param>
+        </member>
+        <member name="M:Growth.WEB.Controllers.KidController.Get(System.Guid)">
+            <summary>
+            Returns kid with id
+            </summary>
+            <param name="id">Kid id</param>
+        </member>
+        <member name="M:Growth.WEB.Controllers.KidController.Get">
+            <summary>
+            Returns all kids for current user
+            </summary>
+        </member>
+        <member name="M:Growth.WEB.Controllers.KidController.Post(Growth.WEB.Models.KidApiModel)">
+            <summary>
+            Creates new kid
+            </summary>
+            <param name="kidApiModel">Kid model</param>
+        </member>
+        <member name="M:Growth.WEB.Controllers.KidController.Delete(System.Guid)">
+            <summary>
+            Deletes kid with id 
+            </summary>
+            <param name="id">Kid id</param>
+        </member>
+        <member name="T:Growth.WEB.Controllers.PathController">
+            <summary>
+            Controller for kids management
+            </summary>
+        </member>
+        <member name="M:Growth.WEB.Controllers.PathController.#ctor(Growth.BLL.Interfaces.IPathService,AutoMapper.IMapper,Microsoft.Extensions.Logging.ILogger{Growth.WEB.Controllers.KidController})">
+            <summary>
+            Constructor
+            </summary>
+            <param name="pathService">Instance IPathService interface that provides operations with paths</param>
+            <param name="mapper">AutoMapper instance</param>
+            <param name="logger">Logger</param>
+        </member>
+        <member name="M:Growth.WEB.Controllers.PathController.Get(System.Guid,System.Guid)">
+            <summary>
+            Returns path with id
+            </summary>
+            <param name="kidId">Kid id</param>
+            <param name="id">Path id</param>
+        </member>
+        <member name="M:Growth.WEB.Controllers.PathController.Get(System.Guid)">
+            <summary>
+            Returns all paths for specified kid
+            </summary>
+            <param name="kidId">Kid id</param>
+        </member>
+        <member name="M:Growth.WEB.Controllers.PathController.Post(System.Guid,Growth.WEB.Models.PathApiModel)">
+            <summary>
+            Creates new path
+            </summary>
+            <param name="kidId">Kid id</param>
+            <param name="pathApiModel">Path model</param>
+        </member>
+        <member name="M:Growth.WEB.Controllers.PathController.Put(System.Guid,Growth.WEB.Models.PathApiModel)">
+            <summary>
+            Updates a path
+            </summary>
+            <param name="kidId">Kid id</param>
+            <param name="pathApiModel">Path model</param>
+        </member>
+        <member name="M:Growth.WEB.Controllers.PathController.Delete(System.Guid,System.Guid)">
+            <summary>
+            Deletes path with id 
+            </summary>
+            <param name="id">Path id</param>
+            <param name="kidId">Kid id</param>
+        </member>
+        <member name="T:Growth.WEB.Controllers.RoleController">
+            <summary>
+            Controller for roles management
+            </summary>
+        </member>
+        <member name="M:Growth.WEB.Controllers.RoleController.#ctor(Growth.BLL.Interfaces.IRoleService,AutoMapper.IMapper,Microsoft.Extensions.Logging.ILogger{Growth.WEB.Controllers.RoleController})">
+            <summary>
+            Constructor
+            </summary>
+            <param name="roleService">Instance IRoleService interface that provides operations with roles</param>
+            <param name="mapper">AutoMapper instance</param>
+            <param name="logger">Logger</param>
+        </member>
+        <member name="M:Growth.WEB.Controllers.RoleController.Get(System.Guid)">
+            <summary>
+            Returns role with id
+            </summary>
+            <param name="id">Role id</param>
+        </member>
+        <member name="M:Growth.WEB.Controllers.RoleController.Get">
+            <summary>
+            Returns all roles
+            </summary>
+        </member>
+        <member name="M:Growth.WEB.Controllers.RoleController.Post(Growth.WEB.Models.AccountApiModels.RoleApiModel)">
+            <summary>
+            Creates new role
+            </summary>
+            <param name="roleApiModel">Role model</param>
+        </member>
+        <member name="M:Growth.WEB.Controllers.RoleController.Delete(System.Guid)">
+            <summary>
+            Deletes role with id 
+            </summary>
+            <param name="id">Role id</param>
+        </member>
+        <member name="T:Growth.WEB.Controllers.StepController">
+            <summary>
+            Controller for steps management
+            </summary>
+        </member>
+        <member name="M:Growth.WEB.Controllers.StepController.#ctor(Growth.BLL.Interfaces.IStepService,AutoMapper.IMapper,Microsoft.Extensions.Logging.ILogger{Growth.WEB.Controllers.KidController})">
+            <summary>
+            Constructor
+            </summary>
+            <param name="stepService">Instance IStepService interface that provides operations with steps</param>
+            <param name="mapper">AutoMapper instance</param>
+            <param name="logger">Logger</param>
+        </member>
+        <member name="M:Growth.WEB.Controllers.StepController.Get(System.Guid,System.Guid,System.Guid,System.Guid)">
+            <summary>
+            Returns step with id
+            </summary>
+            <param name="kidId">Kid id</param>
+            <param name="pathId">Path id</param>
+            <param name="goalId">Goal id</param>
+            <param name="id">Step id</param>
+        </member>
+        <member name="M:Growth.WEB.Controllers.StepController.Get(System.Guid,System.Guid,System.Guid)">
+            <summary>
+            Returns all steps for specified goal
+            </summary>
+            <param name="kidId">Kid id</param>
+            <param name="pathId">Path id</param>
+            <param name="goalId">Goal id</param>
+        </member>
+        <member name="M:Growth.WEB.Controllers.StepController.Post(System.Guid,System.Guid,System.Guid,Growth.WEB.Models.StepApiModel)">
+            <summary>
+            Creates new step
+            </summary>
+            <param name="kidId">Kid id</param>
+            <param name="pathId">Path id</param>
+            <param name="goalId">Goal id</param>
+            <param name="stepApiModel">Step model</param>
+        </member>
+        <member name="M:Growth.WEB.Controllers.StepController.Put(System.Guid,System.Guid,System.Guid,Growth.WEB.Models.StepApiModel)">
+            <summary>
+            Updates a step
+            </summary>
+            <param name="kidId">Kid id</param>
+            <param name="pathId">Path id</param>
+            <param name="goalId">Goal id</param>
+            <param name="stepApiModel">Step model</param>
+        </member>
+        <member name="M:Growth.WEB.Controllers.StepController.Delete(System.Guid,System.Guid,System.Guid,System.Guid)">
+            <summary>
+            Deletes step with id 
+            </summary>
+            <param name="kidId">Kid id</param>
+            <param name="pathId">Path id</param>
+            <param name="goalId">Goal id</param>
+            <param name="id">Step id</param>
+        </member>
+        <member name="T:Growth.WEB.Controllers.UserController">
+            <summary>
+            Controller for users management
+            </summary>
+        </member>
+        <member name="M:Growth.WEB.Controllers.UserController.#ctor(Growth.BLL.Interfaces.IUserService,AutoMapper.IMapper,Microsoft.Extensions.Logging.ILogger{Growth.WEB.Controllers.UserController})">
+            <summary>
+            Constructor
+            </summary>
+            <param name="userService">Instance IUserService interface that provides operations with user</param>
+            <param name="mapper">AutoMapper instance</param>
+            <param name="logger">Logger</param>
+        </member>
+        <member name="M:Growth.WEB.Controllers.UserController.Get">
+            <summary>
+            Returns all users
+            </summary>
+        </member>
+        <member name="M:Growth.WEB.Controllers.UserController.Get(System.Guid)">
+            <summary>
+            Returns user's entity with id
+            </summary>
+            <param name="id">User's id</param>
+        </member>
+        <member name="M:Growth.WEB.Controllers.UserController.AddToRole(System.Guid,System.String)">
+            <summary>
+            Adds role for user
+            </summary>
+            <param name="userId">User id</param>
+            <param name="roleName">Role name</param>
+        </member>
+        <member name="M:Growth.WEB.Controllers.UserController.RemoveFromRole(System.Guid,System.String)">
+            <summary>
+            Removes role from user
+            </summary>
+            <param name="userId">User id</param>
+            <param name="roleName">Role name</param>
+        </member>
+        <member name="T:Growth.WEB.Filters.ErrorFilter">
+            <summary>
+            Global error filter
+            </summary>
+        </member>
+        <member name="M:Growth.WEB.Filters.ErrorFilter.#ctor(Microsoft.Extensions.Logging.ILogger{Growth.WEB.Filters.ErrorFilter})">
+            <summary>
+            Constructor
+            </summary>
+            <param name="logger">Logger</param>
+        </member>
+        <member name="M:Growth.WEB.Filters.ErrorFilter.OnException(Microsoft.AspNetCore.Mvc.Filters.ExceptionContext)">
+            <summary>
+            This method is called when exception occured
+            </summary>
+            <param name="filterContext"></param>
+        </member>
+        <member name="T:Growth.WEB.Infrastructure.Automapper.ApiModelToDtoProfile">
+            <summary>
+            AutoMapper profile from ApiModels to Dto model
+            </summary>
+        </member>
+        <member name="M:Growth.WEB.Infrastructure.Automapper.ApiModelToDtoProfile.#ctor">
+            <summary>
+            Constructor
+            </summary>
+        </member>
+        <member name="T:Growth.WEB.Infrastructure.Automapper.AutoMapperConfiguration">
+            <summary>
+            Class for attaching AutoMapper profiles
+            </summary>
+        </member>
+        <member name="M:Growth.WEB.Infrastructure.Automapper.AutoMapperConfiguration.Configure">
+            <summary>
+            Configures an AutoMapper instance
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="T:Growth.WEB.Infrastructure.Automapper.DtoToApiModelProfile">
+            <summary>
+            AutoMapper profile from Dto model to ApiModels
+            </summary>
+        </member>
+        <member name="M:Growth.WEB.Infrastructure.Automapper.DtoToApiModelProfile.#ctor">
+            <summary>
+            Constructor
+            </summary>
+        </member>
+        <member name="T:Growth.WEB.Infrastructure.ClaimsPrincipalExtentions">
+            <summary>
+            Extencions for ClaimsPrincipal
+            </summary>
+        </member>
+        <member name="M:Growth.WEB.Infrastructure.ClaimsPrincipalExtentions.GetUserId(System.Security.Claims.ClaimsPrincipal)">
+            <summary>
+            Provides id of current user
+            </summary>
+            <param name="principal"></param>
+            <returns></returns>
+        </member>
+        <member name="T:Growth.WEB.Infrastructure.DI.DependencyResolver">
+            <summary>
+            Class for all dependency resolutions
+            </summary>
+        </member>
+        <member name="M:Growth.WEB.Infrastructure.DI.DependencyResolver.Resolve(Microsoft.Extensions.DependencyInjection.IServiceCollection,Microsoft.Extensions.Configuration.IConfiguration)">
+            <summary>
+            Resolves specified dependency injections
+            </summary>
+            <param name="services"></param>
+            <param name="configuration"></param>
+        </member>
+        <member name="T:Growth.WEB.Infrastructure.Swagger.ApplyOAuth2Security">
+            <summary>
+            Operation filter for adding an authorization header field
+            </summary>
+        </member>
+        <member name="M:Growth.WEB.Infrastructure.Swagger.ApplyOAuth2Security.Apply(Swashbuckle.AspNetCore.Swagger.Operation,Swashbuckle.AspNetCore.SwaggerGen.OperationFilterContext)">
+            <summary>
+            Applies operation filter
+            </summary>
+            <param name="operation">Operation to apply filter</param>
+            <param name="context">Operation filter context</param>
+        </member>
+        <member name="T:Growth.WEB.Infrastructure.Swagger.ApplyTokenProvider">
+            <summary>
+            Swagger document for JWT token providing
+            </summary>
+        </member>
+        <member name="M:Growth.WEB.Infrastructure.Swagger.ApplyTokenProvider.Apply(Swashbuckle.AspNetCore.Swagger.SwaggerDocument,Swashbuckle.AspNetCore.SwaggerGen.DocumentFilterContext)">
+            <summary>
+            Applies document filter
+            </summary>
+            <param name="swaggerDoc">Swagger document</param>
+            <param name="context">Docoment context</param>
+        </member>
+        <member name="T:Growth.WEB.Models.AccountApiModels.LoginApiModel">
+            <summary>
+            Model for login
+            </summary>
+        </member>
+        <member name="P:Growth.WEB.Models.AccountApiModels.LoginApiModel.Email">
+            <summary>
+            Unique user email
+            </summary>
+        </member>
+        <member name="P:Growth.WEB.Models.AccountApiModels.LoginApiModel.Password">
+            <summary>
+            User password
+            </summary>
+        </member>
+        <member name="T:Growth.WEB.Models.AccountApiModels.RegisterApiModel">
+            <summary>
+            Model for registration
+            </summary>
+        </member>
+        <member name="P:Growth.WEB.Models.AccountApiModels.RegisterApiModel.Name">
+            <summary>
+            User name
+            </summary>
+        </member>
+        <member name="P:Growth.WEB.Models.AccountApiModels.RegisterApiModel.Email">
+            <summary>
+            Unique user email
+            </summary>
+        </member>
+        <member name="P:Growth.WEB.Models.AccountApiModels.RegisterApiModel.Password">
+            <summary>
+            Password (has to contain at least 1 letter and 1 digit. Required length: 8 - 20)
+            </summary>
+        </member>
+        <member name="P:Growth.WEB.Models.AccountApiModels.RegisterApiModel.ConfirmPassword">
+            <summary>
+            Password confirmation
+            </summary>
+        </member>
+        <member name="T:Growth.WEB.Models.AccountApiModels.RoleApiModel">
+            <summary>
+            Role model
+            </summary>
+        </member>
+        <member name="P:Growth.WEB.Models.AccountApiModels.RoleApiModel.Id">
+            <summary>
+            Role id
+            </summary>
+        </member>
+        <member name="P:Growth.WEB.Models.AccountApiModels.RoleApiModel.Name">
+            <summary>
+            Role name
+            </summary>
+        </member>
+        <member name="T:Growth.WEB.Models.AccountApiModels.TokenApiModel">
+            <summary>
+            JWT token model
+            </summary>
+        </member>
+        <member name="P:Growth.WEB.Models.AccountApiModels.TokenApiModel.Token">
+            <summary>
+            Token value
+            </summary>
+        </member>
+        <member name="P:Growth.WEB.Models.AccountApiModels.TokenApiModel.ExpiresIn">
+            <summary>
+            Expiration time (in seconds)
+            </summary>
+        </member>
+        <member name="T:Growth.WEB.Models.AccountApiModels.UserApiModel">
+            <summary>
+            User model
+            </summary>
+        </member>
+        <member name="P:Growth.WEB.Models.AccountApiModels.UserApiModel.Id">
+            <summary>
+            User id
+            </summary>
+        </member>
+        <member name="P:Growth.WEB.Models.AccountApiModels.UserApiModel.Email">
+            <summary>
+            User email
+            </summary>
+        </member>
+        <member name="P:Growth.WEB.Models.AccountApiModels.UserApiModel.Name">
+            <summary>
+            User name
+            </summary>
+        </member>
+        <member name="P:Growth.WEB.Models.AccountApiModels.UserApiModel.Roles">
+            <summary>
+            Roles of this user
+            </summary>
+        </member>
+        <member name="T:Growth.WEB.Models.GoalApiModel">
+            <summary>
+            Goal model (part of Path)
+            </summary>
+        </member>
+        <member name="P:Growth.WEB.Models.GoalApiModel.Id">
+            <summary>
+            Goal id
+            </summary>
+        </member>
+        <member name="P:Growth.WEB.Models.GoalApiModel.Title">
+            <summary>
+            Goal title
+            </summary>
+        </member>
+        <member name="P:Growth.WEB.Models.GoalApiModel.Completed">
+            <summary>
+            Is goal completed?
+            </summary>
+        </member>
+        <member name="P:Growth.WEB.Models.GoalApiModel.GoalYear">
+            <summary>
+            Year to complete the goal
+            </summary>
+        </member>
+        <member name="P:Growth.WEB.Models.GoalApiModel.GoalMonth">
+            <summary>
+            Month to complete the goal (prefarable format: JUN, DEC etc)
+            </summary>
+        </member>
+        <member name="T:Growth.WEB.Models.KidApiModel">
+            <summary>
+            Kid model
+            </summary>
+        </member>
+        <member name="P:Growth.WEB.Models.KidApiModel.Id">
+            <summary>
+            Kid's id
+            </summary>
+        </member>
+        <member name="P:Growth.WEB.Models.KidApiModel.Name">
+            <summary>
+            Kid name
+            </summary>
+        </member>
+        <member name="P:Growth.WEB.Models.KidApiModel.Gender">
+            <summary>
+            Kid's gender (Male or Female)
+            </summary>
+        </member>
+        <member name="P:Growth.WEB.Models.KidApiModel.Photo">
+            <summary>
+            Kid's photo represented as byte array
+            </summary>
+        </member>
+        <member name="T:Growth.WEB.Models.PathApiModel">
+            <summary>
+            Path model
+            </summary>
+        </member>
+        <member name="P:Growth.WEB.Models.PathApiModel.Id">
+            <summary>
+            Path id
+            </summary>
+        </member>
+        <member name="P:Growth.WEB.Models.PathApiModel.Title">
+            <summary>
+            Path title
+            </summary>
+        </member>
+        <member name="P:Growth.WEB.Models.PathApiModel.Description">
+            <summary>
+            Path description
+            </summary>
+        </member>
+        <member name="T:Growth.WEB.Models.StepApiModel">
+            <summary>
+            Step model (part of goal)
+            </summary>
+        </member>
+        <member name="P:Growth.WEB.Models.StepApiModel.Id">
+            <summary>
+            Step id
+            </summary>
+        </member>
+        <member name="P:Growth.WEB.Models.StepApiModel.Text">
+            <summary>
+            Step text
+            </summary>
+        </member>
+        <member name="P:Growth.WEB.Models.StepApiModel.Completed">
+            <summary>
+            Is step completed?
+            </summary>
+        </member>
+        <member name="T:Growth.WEB.Program">
+            <summary>
+            Entry point to the application
+            </summary>
+        </member>
+        <member name="M:Growth.WEB.Program.Main(System.String[])">
+            <summary>
+            Main
+            </summary>
+            <param name="args">Application arguments</param>
+        </member>
+        <member name="T:Growth.WEB.Startup">
+            <summary>
+            Startup class
+            </summary>
+        </member>
+        <member name="M:Growth.WEB.Startup.#ctor(Microsoft.AspNetCore.Hosting.IHostingEnvironment)">
+            <summary>
+            Constructor
+            </summary>
+            <param name="env">Hosting environment instance</param>
+        </member>
+        <member name="P:Growth.WEB.Startup.Configuration">
+            <summary>
+            Application configuration
+            </summary>
+        </member>
+        <member name="M:Growth.WEB.Startup.ConfigureServices(Microsoft.Extensions.DependencyInjection.IServiceCollection)">
+            <summary>
+            Configures application services
+            </summary>
+            <param name="services">Collection of services</param>
+        </member>
+        <member name="M:Growth.WEB.Startup.Configure(Microsoft.AspNetCore.Builder.IApplicationBuilder,Microsoft.AspNetCore.Hosting.IHostingEnvironment,Microsoft.Extensions.Logging.ILoggerFactory,Microsoft.Extensions.Options.IOptions{Growth.WEB.Authentication.TokenProviderOptions},Microsoft.Extensions.Options.IOptions{Microsoft.IdentityModel.Tokens.TokenValidationParameters})">
+            <summary>
+            Configure application and sets the middlewares
+            </summary>
+            <param name="app">Application builder</param>
+            <param name="env">Hosting environment instance</param>
+            <param name="loggerFactory">Logger factory</param>
+            <param name="tokenProviderOptions">Options for JWT token provider</param>
+            <param name="tokenValidationOptions">Options for JWT token validator</param>
+        </member>
+    </members>
+</doc>
