@@ -15,6 +15,6 @@ namespace Growth.DAL.Interfaces
 
         Task<Guid> UpdateAsync(Guid goalId, Step step);
 
-        Task DeleteAsync(Guid stepId);
+        Task DeleteAsync(Guid goalId, Guid stepId);
     }
 }

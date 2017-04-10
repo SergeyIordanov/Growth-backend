@@ -113,7 +113,7 @@ namespace Growth.BLL.Services
                     "Goal");
             }
 
-            await _unitOfWork.Goals.DeleteAsync(goalId);
+            await _unitOfWork.Goals.DeleteAsync(pathId, goalId);
         }
     }
 }

@@ -80,7 +80,7 @@ namespace Growth.BLL.Services
                     "Path");
             }
 
-            var stepToUpdate = await _unitOfWork.Goals.GetAsync(goalId, stepDto.Id);
+            var stepToUpdate = await _unitOfWork.Steps.GetAsync(goalId, stepDto.Id);
             if (stepToUpdate == null)
             {
                 throw new EntityNotFoundException(
@@ -114,7 +114,7 @@ namespace Growth.BLL.Services
                     "Step");
             }
 
-            await _unitOfWork.Steps.DeleteAsync(stepId);
+            await _unitOfWork.Steps.DeleteAsync(goalId, stepId);
         }
     }
 }

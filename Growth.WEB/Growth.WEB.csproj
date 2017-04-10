@@ -27,6 +27,9 @@
     <DotNetCliToolReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Tools" Version="1.0.0" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="appsettings.Production.json" />
+  </ItemGroup>
+  <ItemGroup>
     <ProjectReference Include="..\Growth.BLL\Growth.BLL.csproj" />
   </ItemGroup>
   <ItemGroup>
