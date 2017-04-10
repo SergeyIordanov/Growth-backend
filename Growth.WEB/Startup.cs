@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using System.IO;
+﻿using System.IO;
 using System.Text;
 using AutoMapper;
 using Growth.WEB.Authentication;
@@ -7,7 +6,6 @@ using Growth.WEB.Authentication.Middlewares;
 using Growth.WEB.Filters;
 using Growth.WEB.Infrastructure.DI;
 using Growth.WEB.Infrastructure.Swagger;
-using Growth.WEB.Models.AccountApiModels;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -56,6 +54,8 @@ namespace Growth.WEB
         public void ConfigureServices(IServiceCollection services)
         {
             DependencyResolver.Resolve(services, Configuration);
+
+            services.AddCors();
 
             services
                 .Configure<TokenProviderOptions>(Configuration.GetSection("TokenProviderOptions"))
@@ -128,6 +128,8 @@ namespace Growth.WEB
 
             loggerFactory.AddConsole(Configuration.GetSection("Logging"));
             loggerFactory.AddDebug();
+
+            app.UseCors(builder => builder.AllowAnyHeader().AllowAnyMethod().AllowAnyOrigin().Build());
 
             app.UseSwagger(c =>
             {
