@@ -11,6 +11,15 @@
   <ItemGroup>
     <Folder Include="wwwroot\" />
   </ItemGroup>
+
+  <ItemGroup>
+    <None Update="NLog.config">
+      <Link>NLog.config</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </None>
+  </ItemGroup>
+
   <ItemGroup>
     <PackageReference Include="AutoMapper" Version="6.0.2" />
     <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="2.0.1" />
