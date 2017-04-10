@@ -6,12 +6,12 @@
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
     <DocumentationFile>XmlDocs\Growth.xml</DocumentationFile>
-    <OutputPath>bin\Debug\netcoreapp1.1\</OutputPath>
+    <OutputPath>bin\Debug</OutputPath>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
     <DocumentationFile>XmlDocs\Growth.xml</DocumentationFile>
-    <OutputPath>bin\Release\netcoreapp1.1\</OutputPath>
+    <OutputPath>bin\Release</OutputPath>
   </PropertyGroup>
 
   <ItemGroup>
