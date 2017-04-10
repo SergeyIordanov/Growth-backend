@@ -4,6 +4,7 @@ using AutoMapper;
 using Growth.BLL.DTO.Authorization;
 using Growth.BLL.Interfaces;
 using Growth.WEB.Models.AccountApiModels;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Swashbuckle.AspNetCore.SwaggerGen;
@@ -14,9 +15,10 @@ namespace Growth.WEB.Controllers
     /// Controller that implements account managing operations
     /// </summary>
     [Route("api/")]
-    public class AccountController : Controller
+    public class AccountController : BaseController
     {
         private readonly IAccountService _accountService;
+        private readonly IUserService _userService;
         private readonly IMapper _mapper;
         private readonly ILogger<AccountController> _logger;
 
@@ -24,11 +26,13 @@ namespace Growth.WEB.Controllers
         /// Constructor
         /// </summary>
         /// <param name="accountService">Instance IAccountService interface that provides operations with user account</param>
+        /// <param name="userService">Instance IUserService interface that provides operations with users</param>
         /// <param name="mapper">AutoMapper instance</param>
         /// <param name="logger">Logger</param>
-        public AccountController(IAccountService accountService, IMapper mapper, ILogger<AccountController> logger)
+        public AccountController(IAccountService accountService, IUserService userService, IMapper mapper, ILogger<AccountController> logger)
         {
             _accountService = accountService;
+            _userService = userService;
             _mapper = mapper;
             _logger = logger;
         }
@@ -54,6 +58,21 @@ namespace Growth.WEB.Controllers
             }
 
             return BadRequest(ModelState);
+        }
+
+        /// <summary>
+        /// Returns info about current user
+        /// </summary>
+        [HttpGet("me")]
+        [Authorize]
+        [SwaggerResponse((int)HttpStatusCode.OK, Description = "Success")]
+        [SwaggerResponse((int)HttpStatusCode.Unauthorized, Description = "Unauthorized")]
+        public async Task<IActionResult> Get()
+        {
+            var userDto = await _userService.GetAsync(CurrentUserId);
+            var userApiModel = _mapper.Map<UserApiModel>(userDto);
+
+            return Json(userApiModel);
         }
     }
 }
