@@ -18,7 +18,7 @@ namespace Growth.DAL.Entities
 
         public Guid UserId { get; set; }
 
-        public byte[] Photo { get; set; }
+        public string Photo { get; set; }
 
         public IList<Path> Paths { get; set; }
 

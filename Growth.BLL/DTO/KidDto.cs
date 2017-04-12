@@ -10,6 +10,6 @@ namespace Growth.BLL.DTO
 
         public string Gender { get; set; }
 
-        public byte[] Photo { get; set; }
+        public string Photo { get; set; }
     }
 }

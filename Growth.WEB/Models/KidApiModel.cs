@@ -28,6 +28,6 @@ namespace Growth.WEB.Models
         /// <summary>
         /// Kid's photo represented as byte array
         /// </summary>
-        public byte[] Photo { get; set; }
+        public string Photo { get; set; }
     }
 }
