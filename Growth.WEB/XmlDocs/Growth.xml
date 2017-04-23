@@ -100,11 +100,12 @@
             Controller that implements account managing operations
             </summary>
         </member>
-        <member name="M:Growth.WEB.Controllers.AccountController.#ctor(Growth.BLL.Interfaces.IAccountService,AutoMapper.IMapper,Microsoft.Extensions.Logging.ILogger{Growth.WEB.Controllers.AccountController})">
+        <member name="M:Growth.WEB.Controllers.AccountController.#ctor(Growth.BLL.Interfaces.IAccountService,Growth.BLL.Interfaces.IUserService,AutoMapper.IMapper,Microsoft.Extensions.Logging.ILogger{Growth.WEB.Controllers.AccountController})">
             <summary>
             Constructor
             </summary>
             <param name="accountService">Instance IAccountService interface that provides operations with user account</param>
+            <param name="userService">Instance IUserService interface that provides operations with users</param>
             <param name="mapper">AutoMapper instance</param>
             <param name="logger">Logger</param>
         </member>
@@ -113,6 +114,11 @@
             Registers a new user
             </summary>
             <param name="model">Contains user's login, password, name</param>
+        </member>
+        <member name="M:Growth.WEB.Controllers.AccountController.Get">
+            <summary>
+            Returns info about current user
+            </summary>
         </member>
         <member name="T:Growth.WEB.Controllers.BaseController">
             <summary>

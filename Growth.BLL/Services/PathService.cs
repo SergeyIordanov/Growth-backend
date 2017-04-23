@@ -92,7 +92,7 @@ namespace Growth.BLL.Services
             if (path == null)
             {
                 throw new EntityNotFoundException(
-                    $"Cannot find path with such id. kid id: {kidId}. Path id: {pathId}",
+                    $"Cannot find path with such id. Kid id: {kidId}. Path id: {pathId}",
                     "Kid");
             }
 
