@@ -12,26 +12,26 @@ namespace Growth.BLL.Services
 {
     public class KidService : IKidService
     {
-        private readonly IUnitOfWork _unitOfWork;
-        private readonly IMapper _mapper;
+        private readonly IUnitOfWork unitOfWork;
+        private readonly IMapper mapper;
 
         public KidService(IUnitOfWork unitOfWork, IMapper mapper)
         {
-            _unitOfWork = unitOfWork;
-            _mapper = mapper;
+            this.unitOfWork = unitOfWork;
+            this.mapper = mapper;
         }
 
         public async Task<IEnumerable<KidDto>> GetAllAsync(Guid userId)
         {
-            var kids = await _unitOfWork.Kids.GetByUserAsync(userId);
-            var kidDtos = _mapper.Map<IEnumerable<KidDto>>(kids);
+            var kids = await unitOfWork.Kids.GetByUserAsync(userId);
+            var kidDtos = mapper.Map<IEnumerable<KidDto>>(kids);
 
             return kidDtos;
         }
 
         public async Task<KidDto> GetAsync(Guid userId, Guid kidId)
         {
-            var kid = await _unitOfWork.Kids.GetAsync(kidId);
+            var kid = await unitOfWork.Kids.GetAsync(kidId);
 
             if (kid == null || kid.UserId != userId)
             {
@@ -40,14 +40,14 @@ namespace Growth.BLL.Services
                     "Kid");
             }
 
-            var kidDto = _mapper.Map<KidDto>(kid);
+            var kidDto = mapper.Map<KidDto>(kid);
 
             return kidDto;
         }
 
         public async Task<Guid> CreateAsync(Guid userId, KidDto kidDto)
         {
-            var user = await _unitOfWork.Users.GetAsync(userId);
+            var user = await unitOfWork.Users.GetAsync(userId);
             if (user == null)
             {
                 throw new EntityNotFoundException(
@@ -55,17 +55,17 @@ namespace Growth.BLL.Services
                     "User");
             }
 
-            var kid = _mapper.Map<Kid>(kidDto);
+            var kid = mapper.Map<Kid>(kidDto);
             kid.UserId = userId;
 
-            var id = await _unitOfWork.Kids.CreateAsync(kid);
+            var id = await unitOfWork.Kids.CreateAsync(kid);
 
             return id;
         }
 
         public async Task DeleteAsync(Guid userId, Guid kidId)
         {
-            var kid = await _unitOfWork.Kids.GetAsync(kidId);
+            var kid = await unitOfWork.Kids.GetAsync(kidId);
 
             if (kid == null || kid.UserId != userId)
             {
@@ -74,7 +74,7 @@ namespace Growth.BLL.Services
                     "Kid");
             }
 
-            await _unitOfWork.Kids.DeleteAsync(kidId);
+            await unitOfWork.Kids.DeleteAsync(kidId);
         }
     }
 }

@@ -17,10 +17,10 @@ namespace Growth.WEB.Controllers
     [Route("api/")]
     public class AccountController : BaseController
     {
-        private readonly IAccountService _accountService;
-        private readonly IUserService _userService;
-        private readonly IMapper _mapper;
-        private readonly ILogger<AccountController> _logger;
+        private readonly IAccountService accountService;
+        private readonly IUserService userService;
+        private readonly IMapper mapper;
+        private readonly ILogger<AccountController> logger;
 
         /// <summary>
         /// Constructor
@@ -31,10 +31,10 @@ namespace Growth.WEB.Controllers
         /// <param name="logger">Logger</param>
         public AccountController(IAccountService accountService, IUserService userService, IMapper mapper, ILogger<AccountController> logger)
         {
-            _accountService = accountService;
-            _userService = userService;
-            _mapper = mapper;
-            _logger = logger;
+            this.accountService = accountService;
+            this.userService = userService;
+            this.mapper = mapper;
+            this.logger = logger;
         }
 
         /// <summary>
@@ -49,10 +49,10 @@ namespace Growth.WEB.Controllers
         {
             if (ModelState.IsValid)
             {
-                var registerModelDto = _mapper.Map<RegisterModelDto>(model);
-                await _accountService.RegisterAsync(registerModelDto);
+                var registerModelDto = mapper.Map<RegisterModelDto>(model);
+                await accountService.RegisterAsync(registerModelDto);
 
-                _logger.LogInformation($"User was registration with email: {model.Email}");
+                logger.LogInformation($"User was registration with email: {model.Email}");
 
                 return Ok();
             }
@@ -69,8 +69,8 @@ namespace Growth.WEB.Controllers
         [SwaggerResponse((int)HttpStatusCode.Unauthorized, Description = "Unauthorized")]
         public async Task<IActionResult> Get()
         {
-            var userDto = await _userService.GetAsync(CurrentUserId);
-            var userApiModel = _mapper.Map<UserApiModel>(userDto);
+            var userDto = await userService.GetAsync(CurrentUserId);
+            var userApiModel = mapper.Map<UserApiModel>(userDto);
 
             return Json(userApiModel);
         }

@@ -7,39 +7,39 @@ namespace Growth.DAL.UnitOfWorks
 {
     public class UnitOfWork : IUnitOfWork
     {
-        private readonly Lazy<IRepository<User>> _userRepository;
+        private readonly Lazy<IRepository<User>> userRepository;
 
-        private readonly Lazy<IRepository<Role>> _roleRepository;
+        private readonly Lazy<IRepository<Role>> roleRepository;
 
-        private readonly Lazy<IKidRepository> _kidRepository;
+        private readonly Lazy<IKidRepository> kidRepository;
 
-        private readonly Lazy<IPathRepository> _pathRepository;
+        private readonly Lazy<IPathRepository> pathRepository;
 
-        private readonly Lazy<IGoalRepository> _goalRepository;
+        private readonly Lazy<IGoalRepository> goalRepository;
 
-        private readonly Lazy<IStepRepository> _stepRepository;
+        private readonly Lazy<IStepRepository> stepRepository;
 
         public UnitOfWork(IDbContext context)
         {
             var db = context;
-            _userRepository = new Lazy<IRepository<User>>(() => new CommonRepository<User>(db));
-            _roleRepository = new Lazy<IRepository<Role>>(() => new CommonRepository<Role>(db));
-            _kidRepository = new Lazy<IKidRepository>(() => new KidRepository(db));
-            _pathRepository = new Lazy<IPathRepository>(() => new PathRepository(db));
-            _goalRepository = new Lazy<IGoalRepository>(() => new GoalRepository(db));
-            _stepRepository = new Lazy<IStepRepository>(() => new StepRepository(db));
+            userRepository = new Lazy<IRepository<User>>(() => new CommonRepository<User>(db));
+            roleRepository = new Lazy<IRepository<Role>>(() => new CommonRepository<Role>(db));
+            kidRepository = new Lazy<IKidRepository>(() => new KidRepository(db));
+            pathRepository = new Lazy<IPathRepository>(() => new PathRepository(db));
+            goalRepository = new Lazy<IGoalRepository>(() => new GoalRepository(db));
+            stepRepository = new Lazy<IStepRepository>(() => new StepRepository(db));
         }
 
-        public IRepository<User> Users => _userRepository.Value;
+        public IRepository<User> Users => userRepository.Value;
 
-        public IRepository<Role> Roles => _roleRepository.Value;
+        public IRepository<Role> Roles => roleRepository.Value;
 
-        public IKidRepository Kids => _kidRepository.Value;
+        public IKidRepository Kids => kidRepository.Value;
 
-        public IPathRepository Paths => _pathRepository.Value;
+        public IPathRepository Paths => pathRepository.Value;
 
-        public IGoalRepository Goals => _goalRepository.Value;
+        public IGoalRepository Goals => goalRepository.Value;
 
-        public IStepRepository Steps => _stepRepository.Value;
+        public IStepRepository Steps => stepRepository.Value;
     }
 }

@@ -21,9 +21,9 @@ namespace Growth.WEB.Controllers
     [SwaggerResponse((int)HttpStatusCode.Unauthorized, Description = "Unauthorized")]
     public class PathController : BaseController
     {
-        private readonly IPathService _pathService;
-        private readonly IMapper _mapper;
-        private readonly ILogger<KidController> _logger;
+        private readonly IPathService pathService;
+        private readonly IMapper mapper;
+        private readonly ILogger<KidController> logger;
 
         /// <summary>
         /// Constructor
@@ -33,9 +33,9 @@ namespace Growth.WEB.Controllers
         /// <param name="logger">Logger</param>
         public PathController(IPathService pathService, IMapper mapper, ILogger<KidController> logger)
         {
-            _pathService = pathService;
-            _mapper = mapper;
-            _logger = logger;
+            this.pathService = pathService;
+            this.mapper = mapper;
+            this.logger = logger;
         }
 
         /// <summary>
@@ -48,8 +48,8 @@ namespace Growth.WEB.Controllers
         [SwaggerResponse((int)HttpStatusCode.NotFound, Description = "Path with such id for specified kid doesn't exist")]
         public async Task<IActionResult> Get(Guid kidId, Guid id)
         {
-            var pathDto = await _pathService.GetAsync(kidId, id);
-            var pathApiModel = _mapper.Map<PathApiModel>(pathDto);
+            var pathDto = await pathService.GetAsync(kidId, id);
+            var pathApiModel = mapper.Map<PathApiModel>(pathDto);
 
             return Json(pathApiModel);
         }
@@ -62,8 +62,8 @@ namespace Growth.WEB.Controllers
         [SwaggerResponse((int)HttpStatusCode.OK, Description = "List of all paths for specified kid")]
         public async Task<IActionResult> Get(Guid kidId)
         {
-            var pathDtos = await _pathService.GetAllAsync(kidId);
-            var pathApiModels = _mapper.Map<IEnumerable<PathApiModel>>(pathDtos);
+            var pathDtos = await pathService.GetAllAsync(kidId);
+            var pathApiModels = mapper.Map<IEnumerable<PathApiModel>>(pathDtos);
 
             return Json(pathApiModels);
         }
@@ -83,11 +83,11 @@ namespace Growth.WEB.Controllers
                 return BadRequest(ModelState);
             }
 
-            var pathDto = _mapper.Map<PathDto>(pathApiModel);
+            var pathDto = mapper.Map<PathDto>(pathApiModel);
 
-            var id = await _pathService.CreateAsync(kidId, pathDto);
+            var id = await pathService.CreateAsync(kidId, pathDto);
 
-            _logger.LogInformation($"New path {pathApiModel.Title} was created. Id: {id}");
+            logger.LogInformation($"New path {pathApiModel.Title} was created. Id: {id}");
 
             return Ok(id);
         }
@@ -107,11 +107,11 @@ namespace Growth.WEB.Controllers
                 return BadRequest(ModelState);
             }
 
-            var pathDto = _mapper.Map<PathDto>(pathApiModel);
+            var pathDto = mapper.Map<PathDto>(pathApiModel);
 
-            var id = await _pathService.UpdateAsync(kidId, pathDto);
+            var id = await pathService.UpdateAsync(kidId, pathDto);
 
-            _logger.LogInformation($"Path {pathApiModel.Title} was updated. Id: {id}");
+            logger.LogInformation($"Path {pathApiModel.Title} was updated. Id: {id}");
 
             return Ok(id);
         }
@@ -126,9 +126,9 @@ namespace Growth.WEB.Controllers
         [SwaggerResponse((int)HttpStatusCode.NotFound, Description = "Path with such id doesn't exist")]
         public async Task<IActionResult> Delete(Guid kidId, Guid id)
         {
-            await _pathService.DeleteAsync(kidId, id);
+            await pathService.DeleteAsync(kidId, id);
 
-            _logger.LogInformation($"Delete path with id: {id}");
+            logger.LogInformation($"Delete path with id: {id}");
 
             return Ok();
         }

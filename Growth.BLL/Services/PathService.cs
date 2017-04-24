@@ -12,26 +12,26 @@ namespace Growth.BLL.Services
 {
     public class PathService : IPathService
     {
-        private readonly IUnitOfWork _unitOfWork;
-        private readonly IMapper _mapper;
+        private readonly IUnitOfWork unitOfWork;
+        private readonly IMapper mapper;
 
         public PathService(IUnitOfWork unitOfWork, IMapper mapper)
         {
-            _unitOfWork = unitOfWork;
-            _mapper = mapper;
+            this.unitOfWork = unitOfWork;
+            this.mapper = mapper;
         }
 
         public async Task<IEnumerable<PathDto>> GetAllAsync(Guid kidId)
         {
-            var paths = await _unitOfWork.Paths.GetByKidAsync(kidId);
-            var pathDtos = _mapper.Map<IEnumerable<PathDto>>(paths);
+            var paths = await unitOfWork.Paths.GetByKidAsync(kidId);
+            var pathDtos = mapper.Map<IEnumerable<PathDto>>(paths);
 
             return pathDtos;
         }
 
         public async Task<PathDto> GetAsync(Guid kidId, Guid pathId)
         {
-            var path = await _unitOfWork.Paths.GetAsync(kidId, pathId);
+            var path = await unitOfWork.Paths.GetAsync(kidId, pathId);
 
             if (path == null)
             {
@@ -40,14 +40,14 @@ namespace Growth.BLL.Services
                     "Path");
             }
 
-            var pathDto = _mapper.Map<PathDto>(path);
+            var pathDto = mapper.Map<PathDto>(path);
 
             return pathDto;
         }
 
         public async Task<Guid> CreateAsync(Guid kidId, PathDto pathDto)
         {
-            var kid = await _unitOfWork.Kids.GetAsync(kidId);
+            var kid = await unitOfWork.Kids.GetAsync(kidId);
             if (kid == null)
             {
                 throw new EntityNotFoundException(
@@ -55,15 +55,15 @@ namespace Growth.BLL.Services
                     "Kid");
             }
 
-            var path = _mapper.Map<Path>(pathDto);
-            var id = await _unitOfWork.Paths.CreateAsync(kidId, path);
+            var path = mapper.Map<Path>(pathDto);
+            var id = await unitOfWork.Paths.CreateAsync(kidId, path);
 
             return id;
         }
 
         public async Task<Guid> UpdateAsync(Guid kidId, PathDto pathDto)
         {
-            var kid = await _unitOfWork.Kids.GetAsync(kidId);
+            var kid = await unitOfWork.Kids.GetAsync(kidId);
             if (kid == null)
             {
                 throw new EntityNotFoundException(
@@ -71,7 +71,7 @@ namespace Growth.BLL.Services
                     "Kid");
             }
 
-            var pathToUpdate = await _unitOfWork.Paths.GetAsync(kidId, pathDto.Id);
+            var pathToUpdate = await unitOfWork.Paths.GetAsync(kidId, pathDto.Id);
             if (pathToUpdate == null)
             {
                 throw new EntityNotFoundException(
@@ -79,15 +79,15 @@ namespace Growth.BLL.Services
                     "Path");
             }
 
-            var path = _mapper.Map<Path>(pathDto);
-            var id = await _unitOfWork.Paths.UpdateAsync(path);
+            var path = mapper.Map<Path>(pathDto);
+            var id = await unitOfWork.Paths.UpdateAsync(path);
 
             return id;
         }
 
         public async Task DeleteAsync(Guid kidId, Guid pathId)
         {
-            var path = await _unitOfWork.Paths.GetAsync(kidId, pathId);
+            var path = await unitOfWork.Paths.GetAsync(kidId, pathId);
 
             if (path == null)
             {
@@ -96,7 +96,7 @@ namespace Growth.BLL.Services
                     "Kid");
             }
 
-            await _unitOfWork.Paths.DeleteAsync(pathId);
+            await unitOfWork.Paths.DeleteAsync(pathId);
         }
     }
 }

@@ -21,9 +21,9 @@ namespace Growth.WEB.Controllers
     [SwaggerResponse((int)HttpStatusCode.Unauthorized, Description = "Unauthorized")]
     public class KidController : BaseController
     {
-        private readonly IKidService _kidService;
-        private readonly IMapper _mapper;
-        private readonly ILogger<KidController> _logger;
+        private readonly IKidService kidService;
+        private readonly IMapper mapper;
+        private readonly ILogger<KidController> logger;
 
         /// <summary>
         /// Constructor
@@ -33,9 +33,9 @@ namespace Growth.WEB.Controllers
         /// <param name="logger">Logger</param>
         public KidController(IKidService kidService, IMapper mapper, ILogger<KidController> logger)
         {
-            _kidService = kidService;
-            _mapper = mapper;
-            _logger = logger;
+            this.kidService = kidService;
+            this.mapper = mapper;
+            this.logger = logger;
         }
 
         /// <summary>
@@ -47,8 +47,8 @@ namespace Growth.WEB.Controllers
         [SwaggerResponse((int)HttpStatusCode.NotFound, Description = "Kid with such id doesn't exist")]
         public async Task<IActionResult> Get(Guid id)
         {
-            var kidDto = await _kidService.GetAsync(CurrentUserId, id);
-            var kidApiModel = _mapper.Map<KidApiModel>(kidDto);
+            var kidDto = await kidService.GetAsync(CurrentUserId, id);
+            var kidApiModel = mapper.Map<KidApiModel>(kidDto);
 
             return Json(kidApiModel);
         }
@@ -60,8 +60,8 @@ namespace Growth.WEB.Controllers
         [SwaggerResponse((int)HttpStatusCode.OK, Description = "List of all kids of current user")]
         public async Task<IActionResult> Get()
         {
-            var kidDtos = await _kidService.GetAllAsync(CurrentUserId);
-            var kidApiModels = _mapper.Map<IEnumerable<KidApiModel>>(kidDtos);
+            var kidDtos = await kidService.GetAllAsync(CurrentUserId);
+            var kidApiModels = mapper.Map<IEnumerable<KidApiModel>>(kidDtos);
 
             return Json(kidApiModels);
         }
@@ -80,11 +80,11 @@ namespace Growth.WEB.Controllers
                 return BadRequest(ModelState);
             }
 
-            var kidDto = _mapper.Map<KidDto>(kidApiModel);
+            var kidDto = mapper.Map<KidDto>(kidApiModel);
 
-            var id = await _kidService.CreateAsync(CurrentUserId, kidDto);
+            var id = await kidService.CreateAsync(CurrentUserId, kidDto);
 
-            _logger.LogInformation($"New kid {kidApiModel.Name} was created. Id: {id}");
+            logger.LogInformation($"New kid {kidApiModel.Name} was created. Id: {id}");
 
             return Ok(id);
         }
@@ -98,9 +98,9 @@ namespace Growth.WEB.Controllers
         [SwaggerResponse((int)HttpStatusCode.NotFound, Description = "Kid with such id doesn't exist")]
         public async Task<IActionResult> Delete(Guid id)
         {
-            await _kidService.DeleteAsync(CurrentUserId, id);
+            await kidService.DeleteAsync(CurrentUserId, id);
 
-            _logger.LogInformation($"Delete kid with id: {id}");
+            logger.LogInformation($"Delete kid with id: {id}");
 
             return Ok();
         }

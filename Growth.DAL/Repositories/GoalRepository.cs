@@ -12,19 +12,19 @@ namespace Growth.DAL.Repositories
     public class GoalRepository : IGoalRepository
     {
         private const string IdFieldName = "_id";
-        private readonly string _pathCollectionName = new Path().CollectionName;
-        private readonly string _goalCollectionName = new Goal().CollectionName;
-        private readonly IDbContext _context;
+        private readonly string pathCollectionName = new Path().CollectionName;
+        private readonly string goalCollectionName = new Goal().CollectionName;
+        private readonly IDbContext context;
 
         public GoalRepository(IDbContext context)
         {
-            _context = context;
+            this.context = context;
         }
 
         public async Task<IEnumerable<Goal>> GetByPathAsync(Guid pathId)
         {
             var filter = Builders<Kid>.Filter
-                .Eq($"{_pathCollectionName}.{IdFieldName}", BsonBinaryData.Create(pathId));
+                .Eq($"{pathCollectionName}.{IdFieldName}", BsonBinaryData.Create(pathId));
 
             var kid = await ReceiveKid(filter);
             var path = kid?.Paths?.FirstOrDefault(p => p.Id == pathId);
@@ -35,9 +35,9 @@ namespace Growth.DAL.Repositories
         public async Task<Goal> GetAsync(Guid pathId, Guid goalId)
         {
             var filterByPath = Builders<Kid>.Filter
-                .Eq($"{_pathCollectionName}.{IdFieldName}", BsonBinaryData.Create(pathId));
+                .Eq($"{pathCollectionName}.{IdFieldName}", BsonBinaryData.Create(pathId));
             var filterById = Builders<Kid>.Filter
-                .Eq($"{_pathCollectionName}.{_goalCollectionName}.{IdFieldName}", BsonBinaryData.Create(goalId));
+                .Eq($"{pathCollectionName}.{goalCollectionName}.{IdFieldName}", BsonBinaryData.Create(goalId));
 
             var kid = await ReceiveKid(filterByPath & filterById);
             var path = kid?.Paths?.FirstOrDefault(p => p.Id == pathId);
@@ -50,11 +50,11 @@ namespace Growth.DAL.Repositories
             goal.Id = Guid.NewGuid();
 
             var filter = Builders<Kid>.Filter
-                .Eq($"{_pathCollectionName}.{IdFieldName}", BsonBinaryData.Create(pathId));
+                .Eq($"{pathCollectionName}.{IdFieldName}", BsonBinaryData.Create(pathId));
             var update = Builders<Kid>.Update
-                .Push($"{_pathCollectionName}.$.{_goalCollectionName}", goal);
+                .Push($"{pathCollectionName}.$.{goalCollectionName}", goal);
 
-            await _context.GetCollection<Kid>().UpdateOneAsync(filter, update);
+            await context.GetCollection<Kid>().UpdateOneAsync(filter, update);
 
             return goal.Id;
         }
@@ -62,7 +62,7 @@ namespace Growth.DAL.Repositories
         public async Task<Guid> UpdateAsync(Guid pathId, Goal goal)
         {
             var filter = Builders<Kid>.Filter
-                .Eq($"{_pathCollectionName}.{_goalCollectionName}.{IdFieldName}", BsonBinaryData.Create(goal.Id));
+                .Eq($"{pathCollectionName}.{goalCollectionName}.{IdFieldName}", BsonBinaryData.Create(goal.Id));
 
             var kid = await ReceiveKid(filter);
             var path = kid?.Paths?.FirstOrDefault(p => p.Id == pathId);
@@ -87,7 +87,7 @@ namespace Growth.DAL.Repositories
 
             var update = Builders<Kid>.Update.Set(k => k.Paths, kid.Paths);
 
-            await _context.GetCollection<Kid>().UpdateOneAsync(filter, update);
+            await context.GetCollection<Kid>().UpdateOneAsync(filter, update);
 
             return goal.Id;
         }
@@ -95,7 +95,7 @@ namespace Growth.DAL.Repositories
         public async Task DeleteAsync(Guid pathId, Guid goalId)
         {
             var filter = Builders<Kid>.Filter
-                .Eq($"{_pathCollectionName}.{_goalCollectionName}.{IdFieldName}", BsonBinaryData.Create(goalId));
+                .Eq($"{pathCollectionName}.{goalCollectionName}.{IdFieldName}", BsonBinaryData.Create(goalId));
 
             var kid = await ReceiveKid(filter);
 
@@ -120,12 +120,12 @@ namespace Growth.DAL.Repositories
 
             var update = Builders<Kid>.Update.Set(k => k.Paths, kid.Paths);
 
-            await _context.GetCollection<Kid>().UpdateOneAsync(filter, update);
+            await context.GetCollection<Kid>().UpdateOneAsync(filter, update);
         }
 
         private async Task<Kid> ReceiveKid(FilterDefinition<Kid> filter)
         {
-            var kids = await _context.GetCollection<Kid>().FindAsync(filter);
+            var kids = await context.GetCollection<Kid>().FindAsync(filter);
             var kid = await kids.FirstOrDefaultAsync();
 
             return kid;

@@ -21,9 +21,9 @@ namespace Growth.WEB.Controllers
     [SwaggerResponse((int)HttpStatusCode.Unauthorized, Description = "Unauthorized")]
     public class GoalController : BaseController
     {
-        private readonly IGoalService _goalService;
-        private readonly IMapper _mapper;
-        private readonly ILogger<KidController> _logger;
+        private readonly IGoalService goalService;
+        private readonly IMapper mapper;
+        private readonly ILogger<KidController> logger;
 
         /// <summary>
         /// Constructor
@@ -33,9 +33,9 @@ namespace Growth.WEB.Controllers
         /// <param name="logger">Logger</param>
         public GoalController(IGoalService goalService, IMapper mapper, ILogger<KidController> logger)
         {
-            _goalService = goalService;
-            _mapper = mapper;
-            _logger = logger;
+            this.goalService = goalService;
+            this.mapper = mapper;
+            this.logger = logger;
         }
 
         /// <summary>
@@ -49,8 +49,8 @@ namespace Growth.WEB.Controllers
         [SwaggerResponse((int)HttpStatusCode.NotFound, Description = "Goal with such id for specified path doesn't exist")]
         public async Task<IActionResult> Get(Guid kidId, Guid pathId, Guid id)
         {
-            var goalDto = await _goalService.GetAsync(kidId, pathId, id);
-            var goalApiModel = _mapper.Map<GoalApiModel>(goalDto);
+            var goalDto = await goalService.GetAsync(kidId, pathId, id);
+            var goalApiModel = mapper.Map<GoalApiModel>(goalDto);
 
             return Json(goalApiModel);
         }
@@ -64,8 +64,8 @@ namespace Growth.WEB.Controllers
         [SwaggerResponse((int)HttpStatusCode.OK, Description = "List of all goals for specified path")]
         public async Task<IActionResult> Get(Guid kidId, Guid pathId)
         {
-            var goalDtos = await _goalService.GetAllAsync(kidId, pathId);
-            var goalApiModels = _mapper.Map<IEnumerable<GoalApiModel>>(goalDtos);
+            var goalDtos = await goalService.GetAllAsync(kidId, pathId);
+            var goalApiModels = mapper.Map<IEnumerable<GoalApiModel>>(goalDtos);
 
             return Json(goalApiModels);
         }
@@ -86,11 +86,11 @@ namespace Growth.WEB.Controllers
                 return BadRequest(ModelState);
             }
 
-            var goalDto = _mapper.Map<GoalDto>(goalApiModel);
+            var goalDto = mapper.Map<GoalDto>(goalApiModel);
 
-            var id = await _goalService.CreateAsync(kidId, pathId, goalDto);
+            var id = await goalService.CreateAsync(kidId, pathId, goalDto);
 
-            _logger.LogInformation($"New goal {goalApiModel.Title} was created. Id: {id}");
+            logger.LogInformation($"New goal {goalApiModel.Title} was created. Id: {id}");
 
             return Ok(id);
         }
@@ -111,11 +111,11 @@ namespace Growth.WEB.Controllers
                 return BadRequest(ModelState);
             }
 
-            var goalDto = _mapper.Map<GoalDto>(goalApiModel);
+            var goalDto = mapper.Map<GoalDto>(goalApiModel);
 
-            var id = await _goalService.UpdateAsync(kidId, pathId, goalDto);
+            var id = await goalService.UpdateAsync(kidId, pathId, goalDto);
 
-            _logger.LogInformation($"Goal {goalApiModel.Title} was updated. Id: {id}");
+            logger.LogInformation($"Goal {goalApiModel.Title} was updated. Id: {id}");
 
             return Ok(id);
         }
@@ -131,9 +131,9 @@ namespace Growth.WEB.Controllers
         [SwaggerResponse((int)HttpStatusCode.NotFound, Description = "Goal with such id doesn't exist")]
         public async Task<IActionResult> Delete(Guid kidId, Guid pathId, Guid id)
         {
-            await _goalService.DeleteAsync(kidId, pathId, id);
+            await goalService.DeleteAsync(kidId, pathId, id);
 
-            _logger.LogInformation($"Delete goal with id: {id}");
+            logger.LogInformation($"Delete goal with id: {id}");
 
             return Ok();
         }

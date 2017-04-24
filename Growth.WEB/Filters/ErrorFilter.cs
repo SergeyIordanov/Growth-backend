@@ -12,7 +12,7 @@ namespace Growth.WEB.Filters
     /// </summary>
     public class ErrorFilter : Attribute, IExceptionFilter
     {
-        private readonly ILogger<ErrorFilter> _logger;
+        private readonly ILogger<ErrorFilter> logger;
 
         /// <summary>
         /// Constructor
@@ -20,7 +20,7 @@ namespace Growth.WEB.Filters
         /// <param name="logger">Logger</param>
         public ErrorFilter(ILogger<ErrorFilter> logger)
         {
-            _logger = logger;
+            this.logger = logger;
         }
 
         /// <summary>
@@ -47,7 +47,7 @@ namespace Growth.WEB.Filters
                     StatusCode = (int) HttpStatusCode.NotFound
                 });
 
-                _logger.LogError($"NotFound exception: {filterContext.Exception.Message}");
+                logger.LogError($"NotFound exception: {filterContext.Exception.Message}");
             }
             else if (entityExistsException != null)
             {
@@ -57,7 +57,7 @@ namespace Growth.WEB.Filters
                     StatusCode = (int)HttpStatusCode.BadRequest
                 });
 
-                _logger.LogError($"EntityExists exception: {filterContext.Exception.Message}");
+                logger.LogError($"EntityExists exception: {filterContext.Exception.Message}");
             }
             else if (serviceException != null)
             {
@@ -67,13 +67,13 @@ namespace Growth.WEB.Filters
                     StatusCode = (int) HttpStatusCode.BadRequest
                 });
 
-                _logger.LogError($"Service exception: {filterContext.Exception.Message}");
+                logger.LogError($"Service exception: {filterContext.Exception.Message}");
             }
             else
             {
                 filterContext.Result = new StatusCodeResult((int) HttpStatusCode.InternalServerError);
 
-                _logger.LogError($"Unhandled exception: {filterContext.Exception.Message} | " +
+                logger.LogError($"Unhandled exception: {filterContext.Exception.Message} | " +
                                  $"StackTrace: {filterContext.Exception.StackTrace}");
             }
 

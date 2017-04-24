@@ -6,7 +6,7 @@ namespace Growth.DAL.Context
 {
     public class DbContext : IDbContext
     {
-        private readonly IMongoDatabase _database;
+        private readonly IMongoDatabase database;
 
         public DbContext()
         {
@@ -17,13 +17,13 @@ namespace Growth.DAL.Context
             var builder = new MongoUrlBuilder(connectionString);
 
             IMongoClient client = new MongoClient(connectionString);
-            _database = client.GetDatabase(builder.DatabaseName);
+            database = client.GetDatabase(builder.DatabaseName);
         }
 
         public IMongoCollection<TEntity> GetCollection<TEntity>()
             where TEntity : BaseType, new()
         {
-            return _database.GetCollection<TEntity>(new TEntity().CollectionName);
+            return database.GetCollection<TEntity>(new TEntity().CollectionName);
         }
     }
 }

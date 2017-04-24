@@ -21,9 +21,9 @@ namespace Growth.WEB.Controllers
     [SwaggerResponse((int)HttpStatusCode.Unauthorized, Description = "Unauthorized")]
     public class StepController : BaseController
     {
-        private readonly IStepService _stepService;
-        private readonly IMapper _mapper;
-        private readonly ILogger<KidController> _logger;
+        private readonly IStepService stepService;
+        private readonly IMapper mapper;
+        private readonly ILogger<KidController> logger;
 
         /// <summary>
         /// Constructor
@@ -33,9 +33,9 @@ namespace Growth.WEB.Controllers
         /// <param name="logger">Logger</param>
         public StepController(IStepService stepService, IMapper mapper, ILogger<KidController> logger)
         {
-            _stepService = stepService;
-            _mapper = mapper;
-            _logger = logger;
+            this.stepService = stepService;
+            this.mapper = mapper;
+            this.logger = logger;
         }
 
         /// <summary>
@@ -50,8 +50,8 @@ namespace Growth.WEB.Controllers
         [SwaggerResponse((int)HttpStatusCode.NotFound, Description = "Step with such id for specified goal doesn't exist")]
         public async Task<IActionResult> Get(Guid kidId, Guid pathId, Guid goalId, Guid id)
         {
-            var stepDto = await _stepService.GetAsync(kidId, pathId, goalId, id);
-            var stepApiModel = _mapper.Map<StepApiModel>(stepDto);
+            var stepDto = await stepService.GetAsync(kidId, pathId, goalId, id);
+            var stepApiModel = mapper.Map<StepApiModel>(stepDto);
 
             return Json(stepApiModel);
         }
@@ -66,8 +66,8 @@ namespace Growth.WEB.Controllers
         [SwaggerResponse((int)HttpStatusCode.OK, Description = "List of all steps for specified goal")]
         public async Task<IActionResult> Get(Guid kidId, Guid pathId, Guid goalId)
         {
-            var stepDtos = await _stepService.GetAllAsync(kidId, pathId, goalId);
-            var stepApiModels = _mapper.Map<IEnumerable<StepApiModel>>(stepDtos);
+            var stepDtos = await stepService.GetAllAsync(kidId, pathId, goalId);
+            var stepApiModels = mapper.Map<IEnumerable<StepApiModel>>(stepDtos);
 
             return Json(stepApiModels);
         }
@@ -89,11 +89,11 @@ namespace Growth.WEB.Controllers
                 return BadRequest(ModelState);
             }
 
-            var stepDto = _mapper.Map<StepDto>(stepApiModel);
+            var stepDto = mapper.Map<StepDto>(stepApiModel);
 
-            var id = await _stepService.CreateAsync(kidId, pathId, goalId, stepDto);
+            var id = await stepService.CreateAsync(kidId, pathId, goalId, stepDto);
 
-            _logger.LogInformation($"New step {stepApiModel.Text} was created. Id: {id}");
+            logger.LogInformation($"New step {stepApiModel.Text} was created. Id: {id}");
 
             return Ok(id);
         }
@@ -115,11 +115,11 @@ namespace Growth.WEB.Controllers
                 return BadRequest(ModelState);
             }
 
-            var stepDto = _mapper.Map<StepDto>(stepApiModel);
+            var stepDto = mapper.Map<StepDto>(stepApiModel);
 
-            var id = await _stepService.UpdateAsync(kidId, pathId, goalId, stepDto);
+            var id = await stepService.UpdateAsync(kidId, pathId, goalId, stepDto);
 
-            _logger.LogInformation($"Step {stepApiModel.Text} was updated. Id: {id}");
+            logger.LogInformation($"Step {stepApiModel.Text} was updated. Id: {id}");
 
             return Ok(id);
         }
@@ -136,9 +136,9 @@ namespace Growth.WEB.Controllers
         [SwaggerResponse((int)HttpStatusCode.NotFound, Description = "Step with such id doesn't exist")]
         public async Task<IActionResult> Delete(Guid kidId, Guid pathId, Guid goalId, Guid id)
         {
-            await _stepService.DeleteAsync(kidId, pathId, goalId, id);
+            await stepService.DeleteAsync(kidId, pathId, goalId, id);
 
-            _logger.LogInformation($"Delete step with id: {id}");
+            logger.LogInformation($"Delete step with id: {id}");
 
             return Ok();
         }

@@ -17,9 +17,9 @@ namespace Growth.WEB.Authentication.Middlewares
     /// </summary>
     public class TokenProviderMiddleware
     {
-        private readonly RequestDelegate _next;
-        private readonly TokenProviderOptions _options;
-        private readonly IIdentityProvider _identityProvider;
+        private readonly RequestDelegate next;
+        private readonly TokenProviderOptions options;
+        private readonly IIdentityProvider identityProvider;
 
         /// <summary>
         /// Constructor
@@ -32,9 +32,9 @@ namespace Growth.WEB.Authentication.Middlewares
             IOptions<TokenProviderOptions> options,
             IIdentityProvider identityProvider)
         {
-            _next = next;
-            _options = options.Value;
-            _identityProvider = identityProvider;
+            this.next = next;
+            this.options = options.Value;
+            this.identityProvider = identityProvider;
         }
 
         /// <summary>
@@ -47,9 +47,9 @@ namespace Growth.WEB.Authentication.Middlewares
             string response;
 
             if (!context.Request.Path.HasValue ||
-                !context.Request.Path.Value.TrimEnd('/').Equals(_options.Path, StringComparison.Ordinal))
+                !context.Request.Path.Value.TrimEnd('/').Equals(options.Path, StringComparison.Ordinal))
             {
-                return _next(context);
+                return next(context);
             }
 
             if (!context.Request.Method.Equals("POST"))
@@ -88,7 +88,7 @@ namespace Growth.WEB.Authentication.Middlewares
             var password = context.Request.Form["password"];
             var now = DateTime.UtcNow;
 
-            var identity = _identityProvider
+            var identity = identityProvider
                 .GetIdentity(new LoginApiModel { Email = username, Password = password });
 
             if (identity == null)
@@ -106,19 +106,19 @@ namespace Growth.WEB.Authentication.Middlewares
             claims.Add(identity.FindFirst(claim => claim.Type.Equals("userId")));
 
             var jwt = new JwtSecurityToken(
-                issuer: _options.Issuer,
-                audience: _options.Audience,
+                issuer: options.Issuer,
+                audience: options.Audience,
                 claims: claims,
                 notBefore: now,
-                expires: now.Add(_options.Expiration),
-                signingCredentials: _options.SigningCredentials);
+                expires: now.Add(options.Expiration),
+                signingCredentials: options.SigningCredentials);
 
             var encodedJwt = new JwtSecurityTokenHandler().WriteToken(jwt);
 
             var token = new TokenApiModel
             {
                 Token = encodedJwt,
-                ExpiresIn = (long)_options.Expiration.TotalSeconds
+                ExpiresIn = (long)options.Expiration.TotalSeconds
             };
 
             return token;

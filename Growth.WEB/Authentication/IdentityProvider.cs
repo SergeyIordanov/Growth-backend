@@ -15,8 +15,8 @@ namespace Growth.WEB.Authentication
     /// </summary>
     public class IdentityProvider : IIdentityProvider
     {
-        private readonly IAccountService _accountService;
-        private readonly IMapper _mapper;
+        private readonly IAccountService accountService;
+        private readonly IMapper mapper;
 
         /// <summary>
         /// Constructor
@@ -25,8 +25,8 @@ namespace Growth.WEB.Authentication
         /// <param name="mapper">AutoMapper instance</param>
         public IdentityProvider(IAccountService accountService, IMapper mapper)
         {
-            _accountService = accountService;
-            _mapper = mapper;
+            this.accountService = accountService;
+            this.mapper = mapper;
         }
 
         /// <summary>
@@ -36,12 +36,12 @@ namespace Growth.WEB.Authentication
         /// <returns>User identity with claims</returns>
         public ClaimsIdentity GetIdentity(LoginApiModel loginApiModel)
         {
-            var loginModelDto = _mapper.Map<LoginModelDto>(loginApiModel);
+            var loginModelDto = mapper.Map<LoginModelDto>(loginApiModel);
             UserDto userDto;
 
             try
             {
-                userDto = _accountService.Login(loginModelDto);
+                userDto = accountService.Login(loginModelDto);
             }
             catch (ServiceException)
             {

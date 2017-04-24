@@ -12,11 +12,11 @@ namespace Growth.BLL.Services
 {
     public class AccountService : IAccountService
     {
-        private readonly IUnitOfWork _unitOfWork;
-        private readonly IRoleService _roleService;
-        private readonly ICryptoProvider _cryptoProvider;
-        private readonly IMapper _mapper;
-        private readonly ILogger<AccountService> _logger;
+        private readonly IUnitOfWork unitOfWork;
+        private readonly IRoleService roleService;
+        private readonly ICryptoProvider cryptoProvider;
+        private readonly IMapper mapper;
+        private readonly ILogger<AccountService> logger;
 
         public AccountService(
             IUnitOfWork unitOfWork, 
@@ -25,25 +25,25 @@ namespace Growth.BLL.Services
             IMapper mapper, 
             ILogger<AccountService> logger)
         {
-            _unitOfWork = unitOfWork;
-            _roleService = roleService;
-            _cryptoProvider = cryptoProvider;
-            _mapper = mapper;
-            _logger = logger;
+            this.unitOfWork = unitOfWork;
+            this.roleService = roleService;
+            this.cryptoProvider = cryptoProvider;
+            this.mapper = mapper;
+            this.logger = logger;
         }
 
         public UserDto Login(LoginModelDto loginModel)
         {
-            var user = _unitOfWork.Users.Find(u => u.Email.Equals(loginModel.Email)).FirstOrDefault();
+            var user = unitOfWork.Users.Find(u => u.Email.Equals(loginModel.Email)).FirstOrDefault();
 
-            if (user == null || !_cryptoProvider.VerifyHash(loginModel.Password, user.PasswordHash))
+            if (user == null || !cryptoProvider.VerifyHash(loginModel.Password, user.PasswordHash))
             {
                 throw new ServiceException("Invalid password", "Password");
             }
 
-            var userDto = _mapper.Map<UserDto>(user);
+            var userDto = mapper.Map<UserDto>(user);
 
-            _logger.LogInformation($"User login with email {loginModel.Email}");
+            logger.LogInformation($"User login with email {loginModel.Email}");
 
             return userDto;
         }
@@ -52,20 +52,20 @@ namespace Growth.BLL.Services
         {
             ValidateEmail(registerModelDto.Email);
 
-            var user = _mapper.Map<User>(registerModelDto);
+            var user = mapper.Map<User>(registerModelDto);
 
             AppendDefaultRole(user);
 
-            user.PasswordHash = _cryptoProvider.GetHash(registerModelDto.Password);
+            user.PasswordHash = cryptoProvider.GetHash(registerModelDto.Password);
 
-            await _unitOfWork.Users.CreateAsync(user);
+            await unitOfWork.Users.CreateAsync(user);
 
-            _logger.LogInformation($"User register with email {registerModelDto.Email}");
+            logger.LogInformation($"User register with email {registerModelDto.Email}");
         }
 
         private void ValidateEmail(string email)
         {
-            if (_unitOfWork.Users.Find(user => user.Email.Equals(email)).Any())
+            if (unitOfWork.Users.Find(user => user.Email.Equals(email)).Any())
             {
                 throw new EntityExistsException($"User with such email is already exists. Email: {email}", "Email");
             }
@@ -75,11 +75,11 @@ namespace Growth.BLL.Services
         {
             try
             {
-                _roleService.Get("user");
+                roleService.Get("user");
             }
             catch (EntityNotFoundException)
             {
-                _roleService.CreateAsync("user");
+                roleService.CreateAsync("user");
             }
 
             user.Roles.Add("user");

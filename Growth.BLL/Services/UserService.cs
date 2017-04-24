@@ -13,30 +13,30 @@ namespace Growth.BLL.Services
 {
     public class UserService : IUserService
     {
-        private readonly IUnitOfWork _unitOfWork;
-        private readonly IRoleService _roleService;
-        private readonly IMapper _mapper;
-        private readonly ILogger<UserService> _logger;
+        private readonly IUnitOfWork unitOfWork;
+        private readonly IRoleService roleService;
+        private readonly IMapper mapper;
+        private readonly ILogger<UserService> logger;
 
         public UserService(IUnitOfWork unitOfWork, IRoleService roleService, IMapper mapper, ILogger<UserService> logger)
         {
-            _unitOfWork = unitOfWork;
-            _roleService = roleService;
-            _mapper = mapper;
-            _logger = logger;
+            this.unitOfWork = unitOfWork;
+            this.roleService = roleService;
+            this.mapper = mapper;
+            this.logger = logger;
         }
 
         public IEnumerable<UserDto> GetAll()
         {
-            var users = _unitOfWork.Users.GetAll();
-            var userDtos = _mapper.Map<List<UserDto>>(users).ToList();
+            var users = unitOfWork.Users.GetAll();
+            var userDtos = mapper.Map<List<UserDto>>(users).ToList();
 
             return userDtos;
         }
 
         public async Task<UserDto> GetAsync(Guid id)
         {
-            var user = await _unitOfWork.Users.GetAsync(id);
+            var user = await unitOfWork.Users.GetAsync(id);
 
             if (user == null)
             {
@@ -45,14 +45,14 @@ namespace Growth.BLL.Services
                     "User");
             }
 
-            var userDto = _mapper.Map<UserDto>(user);
+            var userDto = mapper.Map<UserDto>(user);
 
             return userDto;
         }
 
         public async Task AddToRoleAsync(Guid userId, string role)
         {
-            var user = await _unitOfWork.Users.GetAsync(userId);
+            var user = await unitOfWork.Users.GetAsync(userId);
 
             if (user == null)
             {
@@ -61,18 +61,18 @@ namespace Growth.BLL.Services
                     "User");
             }
 
-            var roleDto = _roleService.Get(role);
+            var roleDto = roleService.Get(role);
 
             user.Roles.Add(roleDto.Name);
 
-            await _unitOfWork.Users.UpdateAsync(user);
+            await unitOfWork.Users.UpdateAsync(user);
 
-            _logger.LogInformation($"Added role {role} to user with id: {userId}");
+            logger.LogInformation($"Added role {role} to user with id: {userId}");
         }
 
         public async Task RemoveRoleAsync(Guid userId, string role)
         {
-            var user = await _unitOfWork.Users.GetAsync(userId);
+            var user = await unitOfWork.Users.GetAsync(userId);
 
             if (user == null)
             {
@@ -90,14 +90,14 @@ namespace Growth.BLL.Services
 
             user.Roles = user.Roles.Where(roleName => !roleName.Equals(role)).ToList();
 
-            await _unitOfWork.Users.UpdateAsync(user);
+            await unitOfWork.Users.UpdateAsync(user);
 
-            _logger.LogInformation($"Removed role {role} from user with id: {userId}");
+            logger.LogInformation($"Removed role {role} from user with id: {userId}");
         }
 
         public async Task<bool> IsInRoleAsync(Guid userId, string role)
         {
-            var user = await _unitOfWork.Users.GetAsync(userId);
+            var user = await unitOfWork.Users.GetAsync(userId);
 
             return user.Roles.Contains(role);
         }

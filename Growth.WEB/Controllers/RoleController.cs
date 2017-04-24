@@ -20,9 +20,9 @@ namespace Growth.WEB.Controllers
     [SwaggerResponse((int)HttpStatusCode.Unauthorized, Description = "Unauthorized")]
     public class RoleController : Controller
     {
-        private readonly IRoleService _roleService;
-        private readonly IMapper _mapper;
-        private readonly ILogger<RoleController> _logger;
+        private readonly IRoleService roleService;
+        private readonly IMapper mapper;
+        private readonly ILogger<RoleController> logger;
 
         /// <summary>
         /// Constructor
@@ -32,9 +32,9 @@ namespace Growth.WEB.Controllers
         /// <param name="logger">Logger</param>
         public RoleController(IRoleService roleService, IMapper mapper, ILogger<RoleController> logger)
         {
-            _roleService = roleService;
-            _mapper = mapper;
-            _logger = logger;
+            this.roleService = roleService;
+            this.mapper = mapper;
+            this.logger = logger;
         }
 
         /// <summary>
@@ -46,8 +46,8 @@ namespace Growth.WEB.Controllers
         [SwaggerResponse((int)HttpStatusCode.NotFound, Description = "Role with such id doesn't exist")]
         public async Task<IActionResult> Get(Guid id)
         {
-            var roleDto = await _roleService.GetAsync(id);
-            var roleApiModel = _mapper.Map<RoleApiModel>(roleDto);
+            var roleDto = await roleService.GetAsync(id);
+            var roleApiModel = mapper.Map<RoleApiModel>(roleDto);
 
             return Json(roleApiModel);
         }
@@ -59,8 +59,8 @@ namespace Growth.WEB.Controllers
         [SwaggerResponse((int)HttpStatusCode.OK, Description = "List of all roles")]
         public IActionResult Get()
         {
-            var roleDtos = _roleService.GetAll();
-            var roleApiModels = _mapper.Map<IEnumerable<RoleApiModel>>(roleDtos);
+            var roleDtos = roleService.GetAll();
+            var roleApiModels = mapper.Map<IEnumerable<RoleApiModel>>(roleDtos);
 
             return Json(roleApiModels);
         }
@@ -79,9 +79,9 @@ namespace Growth.WEB.Controllers
                 return BadRequest(ModelState);
             }
 
-            await _roleService.CreateAsync(roleApiModel.Name);
+            await roleService.CreateAsync(roleApiModel.Name);
 
-            _logger.LogInformation($"New role {roleApiModel.Name} was created");
+            logger.LogInformation($"New role {roleApiModel.Name} was created");
 
             return Ok();
         }
@@ -95,9 +95,9 @@ namespace Growth.WEB.Controllers
         [SwaggerResponse((int)HttpStatusCode.NotFound, Description = "Role with such id doesn't exist")]
         public async Task<IActionResult> Delete(Guid id)
         {
-            await _roleService.DeleteAsync(id);
+            await roleService.DeleteAsync(id);
 
-            _logger.LogInformation($"Delete role with id: {id}");
+            logger.LogInformation($"Delete role with id: {id}");
 
             return Ok();
         }

@@ -14,30 +14,30 @@ namespace Growth.BLL.Services
 {
     public class RoleService : IRoleService
     {
-        private readonly IUnitOfWork _unitOfWork;
-        private readonly IMapper _mapper;
-        private readonly ILogger<RoleService> _logger;
+        private readonly IUnitOfWork unitOfWork;
+        private readonly IMapper mapper;
+        private readonly ILogger<RoleService> logger;
 
         public RoleService(IUnitOfWork unitOfWork, IMapper mapper, ILogger<RoleService> logger)
         {
-            _unitOfWork = unitOfWork;
-            _mapper = mapper;
-            _logger = logger;
+            this.unitOfWork = unitOfWork;
+            this.mapper = mapper;
+            this.logger = logger;
         }
 
         public IEnumerable<RoleDto> GetAll()
         {
-            var roles = _unitOfWork.Roles.GetAll();
-            var roleDtos = _mapper.Map<IEnumerable<RoleDto>>(roles);
+            var roles = unitOfWork.Roles.GetAll();
+            var roleDtos = mapper.Map<IEnumerable<RoleDto>>(roles);
 
-            _logger.LogInformation("Get all roles");
+            logger.LogInformation("Get all roles");
 
             return roleDtos;
         }
 
         public async Task<RoleDto> GetAsync(Guid id)
         {
-            var role = await _unitOfWork.Roles.GetAsync(id);
+            var role = await unitOfWork.Roles.GetAsync(id);
 
             if (role == null)
             {
@@ -46,14 +46,14 @@ namespace Growth.BLL.Services
                     "Role");
             }
 
-            var roleDto = _mapper.Map<RoleDto>(role);
+            var roleDto = mapper.Map<RoleDto>(role);
 
             return roleDto;
         }
 
         public RoleDto Get(string name)
         {
-            var role = _unitOfWork.Roles
+            var role = unitOfWork.Roles
                 .Find(r => r.Name.Equals(name))
                 .FirstOrDefault();
 
@@ -64,14 +64,14 @@ namespace Growth.BLL.Services
                     "Role");
             }
 
-            var roleDto = _mapper.Map<RoleDto>(role);
+            var roleDto = mapper.Map<RoleDto>(role);
 
             return roleDto;
         }
 
         public async Task CreateAsync(string name)
         {
-            var role = _unitOfWork.Roles
+            var role = unitOfWork.Roles
                 .Find(r => r.Name.Equals(name))
                 .FirstOrDefault();
 
@@ -84,14 +84,14 @@ namespace Growth.BLL.Services
 
             var roleToCreate = new Role { Name = name };
 
-            await _unitOfWork.Roles.CreateAsync(roleToCreate);
+            await unitOfWork.Roles.CreateAsync(roleToCreate);
 
-            _logger.LogInformation($"New role {name} created");
+            logger.LogInformation($"New role {name} created");
         }
 
         public async Task DeleteAsync(Guid id)
         {
-            var role = await _unitOfWork.Roles.GetAsync(id);
+            var role = await unitOfWork.Roles.GetAsync(id);
 
             if (role == null)
             {
@@ -100,9 +100,9 @@ namespace Growth.BLL.Services
                     "Role");
             }
 
-            await _unitOfWork.Roles.DeleteAsync(id);
+            await unitOfWork.Roles.DeleteAsync(id);
 
-            _logger.LogInformation($"Role with id: {id} was deleted");
+            logger.LogInformation($"Role with id: {id} was deleted");
         }
     }
 }

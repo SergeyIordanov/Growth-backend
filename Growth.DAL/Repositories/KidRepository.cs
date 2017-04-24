@@ -9,17 +9,17 @@ namespace Growth.DAL.Repositories
 {
     public class KidRepository : IKidRepository
     {
-        private readonly IDbContext _context;
+        private readonly IDbContext context;
 
         public KidRepository(IDbContext context)
         {
-            _context = context;
+            this.context = context;
         }
 
         public async Task<IEnumerable<Kid>> GetByUserAsync(Guid userId)
         {
             var filter = Builders<Kid>.Filter.Eq(kid => kid.UserId, userId);
-            var kids = await _context.GetCollection<Kid>().FindAsync(filter);
+            var kids = await context.GetCollection<Kid>().FindAsync(filter);
 
             return kids.ToEnumerable();
         }
@@ -28,14 +28,14 @@ namespace Growth.DAL.Repositories
         {
             var filterById = Builders<Kid>.Filter.Eq(kid => kid.Id, kidId);
 
-            var kids = await _context.GetCollection<Kid>().FindAsync(filterById);
+            var kids = await context.GetCollection<Kid>().FindAsync(filterById);
 
             return kids.FirstOrDefault();
         }
 
         public async Task<Guid> CreateAsync(Kid kid)
         {
-            var collection = _context.GetCollection<Kid>();
+            var collection = context.GetCollection<Kid>();
             kid.Id = Guid.NewGuid();
 
             await collection.InsertOneAsync(kid);
@@ -45,7 +45,7 @@ namespace Growth.DAL.Repositories
 
         public Task DeleteAsync(Guid kidId)
         {
-            var collection = _context.GetCollection<Kid>();
+            var collection = context.GetCollection<Kid>();
 
             return collection.DeleteOneAsync(entity => entity.Id.Equals(kidId));
         }

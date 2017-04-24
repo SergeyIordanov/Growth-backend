@@ -20,9 +20,9 @@ namespace Growth.WEB.Controllers
     [SwaggerResponse((int)HttpStatusCode.Unauthorized, Description = "Unauthorized")]
     public class UserController : Controller
     {
-        private readonly IUserService _userService;
-        private readonly IMapper _mapper;
-        private readonly ILogger<UserController> _logger;
+        private readonly IUserService userService;
+        private readonly IMapper mapper;
+        private readonly ILogger<UserController> logger;
 
         /// <summary>
         /// Constructor
@@ -32,9 +32,9 @@ namespace Growth.WEB.Controllers
         /// <param name="logger">Logger</param>
         public UserController(IUserService userService, IMapper mapper, ILogger<UserController> logger)
         {
-            _mapper = mapper;
-            _userService = userService;
-            _logger = logger;
+            this.mapper = mapper;
+            this.userService = userService;
+            this.logger = logger;
         }
 
         /// <summary>
@@ -44,8 +44,8 @@ namespace Growth.WEB.Controllers
         [SwaggerResponse((int)HttpStatusCode.OK, typeof(UserApiModel), Description = "List of all users")]
         public IActionResult Get()
         {
-            var userDtos = _userService.GetAll();
-            var userApiModels = _mapper.Map<IEnumerable<UserApiModel>>(userDtos);
+            var userDtos = userService.GetAll();
+            var userApiModels = mapper.Map<IEnumerable<UserApiModel>>(userDtos);
 
             return Json(userApiModels);
         }
@@ -59,8 +59,8 @@ namespace Growth.WEB.Controllers
         [SwaggerResponse((int)HttpStatusCode.NotFound, typeof(JsonResult), Description = "User with such id does not exist")]
         public async Task<IActionResult> Get(Guid id)
         {
-            var userDto = await _userService.GetAsync(id);
-            var userApiModel = _mapper.Map<UserApiModel>(userDto);
+            var userDto = await userService.GetAsync(id);
+            var userApiModel = mapper.Map<UserApiModel>(userDto);
 
             return Json(userApiModel);
         }
@@ -75,12 +75,12 @@ namespace Growth.WEB.Controllers
         [SwaggerResponse((int)HttpStatusCode.NotFound, typeof(JsonResult), Description = "User with such id or role with such name does not exist")]
         public async Task<IActionResult> AddToRole(Guid userId, string roleName)
         {
-            await _userService.AddToRoleAsync(userId, roleName);
+            await userService.AddToRoleAsync(userId, roleName);
 
-            var userDto = await _userService.GetAsync(userId);
-            var userApiModel = _mapper.Map<UserApiModel>(userDto);
+            var userDto = await userService.GetAsync(userId);
+            var userApiModel = mapper.Map<UserApiModel>(userDto);
 
-            _logger.LogInformation($"Adding role {roleName} to user {userId}");
+            logger.LogInformation($"Adding role {roleName} to user {userId}");
 
             return Ok(userApiModel);
         }
@@ -95,12 +95,12 @@ namespace Growth.WEB.Controllers
         [SwaggerResponse((int)HttpStatusCode.NotFound, typeof(JsonResult), Description = "User with such id or role with such name does not exist")]
         public async Task<IActionResult> RemoveFromRole(Guid userId, string roleName)
         {
-            await _userService.RemoveRoleAsync(userId, roleName);
+            await userService.RemoveRoleAsync(userId, roleName);
 
-            var userDto = await _userService.GetAsync(userId);
-            var userApiModel = _mapper.Map<UserApiModel>(userDto);
+            var userDto = await userService.GetAsync(userId);
+            var userApiModel = mapper.Map<UserApiModel>(userDto);
 
-            _logger.LogInformation($"Remove role {roleName} from user {userId}");
+            logger.LogInformation($"Remove role {roleName} from user {userId}");
 
             return Ok(userApiModel);
         }

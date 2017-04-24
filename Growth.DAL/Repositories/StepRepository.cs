@@ -12,20 +12,20 @@ namespace Growth.DAL.Repositories
     public class StepRepository : IStepRepository
     {
         private const string IdFieldName = "_id";
-        private readonly string _pathCollectionName = new Path().CollectionName;
-        private readonly string _goalCollectionName = new Goal().CollectionName;
-        private readonly string _stepCollectionName = new Step().CollectionName;
-        private readonly IDbContext _context;
+        private readonly string pathCollectionName = new Path().CollectionName;
+        private readonly string goalCollectionName = new Goal().CollectionName;
+        private readonly string stepCollectionName = new Step().CollectionName;
+        private readonly IDbContext context;
 
         public StepRepository(IDbContext context)
         {
-            _context = context;
+            this.context = context;
         }
 
         public async Task<IEnumerable<Step>> GetByGoalAsync(Guid goalId)
         {
             var filter = Builders<Kid>.Filter
-                .Eq($"{_pathCollectionName}.{_goalCollectionName}.{IdFieldName}", BsonBinaryData.Create(goalId));
+                .Eq($"{pathCollectionName}.{goalCollectionName}.{IdFieldName}", BsonBinaryData.Create(goalId));
 
             var kid = await ReceiveKid(filter);
             var goal = ReceiveGoal(goalId, kid);
@@ -41,10 +41,10 @@ namespace Growth.DAL.Repositories
         public async Task<Step> GetAsync(Guid goalId, Guid stepId)
         {
             var filterByGoal = Builders<Kid>.Filter
-                .Eq($"{_pathCollectionName}.{_goalCollectionName}.{IdFieldName}", BsonBinaryData.Create(goalId));
+                .Eq($"{pathCollectionName}.{goalCollectionName}.{IdFieldName}", BsonBinaryData.Create(goalId));
             var filterById = Builders<Kid>.Filter
                 .Eq(
-                    $"{_pathCollectionName}.{_goalCollectionName}.{_stepCollectionName}.{IdFieldName}", 
+                    $"{pathCollectionName}.{goalCollectionName}.{stepCollectionName}.{IdFieldName}", 
                     BsonBinaryData.Create(stepId));
 
             var kid = await ReceiveKid(filterByGoal & filterById);
@@ -58,7 +58,7 @@ namespace Growth.DAL.Repositories
             step.Id = Guid.NewGuid();
 
             var filter = Builders<Kid>.Filter
-                .Eq($"{_pathCollectionName}.{_goalCollectionName}.{IdFieldName}", BsonBinaryData.Create(goalId));
+                .Eq($"{pathCollectionName}.{goalCollectionName}.{IdFieldName}", BsonBinaryData.Create(goalId));
 
             var kid = await ReceiveKid(filter);
             var goal = ReceiveGoal(goalId, kid);
@@ -72,7 +72,7 @@ namespace Growth.DAL.Repositories
 
             var update = Builders<Kid>.Update.Set(k => k.Paths, kid.Paths);
 
-            await _context.GetCollection<Kid>().UpdateOneAsync(filter, update);
+            await context.GetCollection<Kid>().UpdateOneAsync(filter, update);
 
             return step.Id;
         }
@@ -80,7 +80,7 @@ namespace Growth.DAL.Repositories
         public async Task<Guid> UpdateAsync(Guid goalId, Step step)
         {
             var filter = Builders<Kid>.Filter
-                .Eq($"{_pathCollectionName}.{_goalCollectionName}.{IdFieldName}", BsonBinaryData.Create(goalId));
+                .Eq($"{pathCollectionName}.{goalCollectionName}.{IdFieldName}", BsonBinaryData.Create(goalId));
 
             var kid = await ReceiveKid(filter);
             var goal = ReceiveGoal(goalId, kid);
@@ -103,7 +103,7 @@ namespace Growth.DAL.Repositories
 
             var update = Builders<Kid>.Update.Set(k => k.Paths, kid.Paths);
 
-            await _context.GetCollection<Kid>().UpdateOneAsync(filter, update);
+            await context.GetCollection<Kid>().UpdateOneAsync(filter, update);
 
             return step.Id;
         }
@@ -111,7 +111,7 @@ namespace Growth.DAL.Repositories
         public async Task DeleteAsync(Guid goalId, Guid stepId)
         {
             var filter = Builders<Kid>.Filter
-                .Eq($"{_pathCollectionName}.{_goalCollectionName}.{IdFieldName}", BsonBinaryData.Create(goalId));
+                .Eq($"{pathCollectionName}.{goalCollectionName}.{IdFieldName}", BsonBinaryData.Create(goalId));
 
             var kid = await ReceiveKid(filter);
             var goal = ReceiveGoal(goalId, kid);
@@ -130,7 +130,7 @@ namespace Growth.DAL.Repositories
 
             var update = Builders<Kid>.Update.Set(k => k.Paths, kid.Paths);
 
-            await _context.GetCollection<Kid>().UpdateOneAsync(filter, update);
+            await context.GetCollection<Kid>().UpdateOneAsync(filter, update);
         }
 
         private static Goal ReceiveGoal(Guid goalId, Kid kid)
@@ -143,7 +143,7 @@ namespace Growth.DAL.Repositories
 
         private async Task<Kid> ReceiveKid(FilterDefinition<Kid> filter)
         {
-            var kids = await _context.GetCollection<Kid>().FindAsync(filter);
+            var kids = await context.GetCollection<Kid>().FindAsync(filter);
             var kid = await kids.FirstOrDefaultAsync();
 
             return kid;

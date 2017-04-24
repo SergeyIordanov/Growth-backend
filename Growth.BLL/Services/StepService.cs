@@ -12,34 +12,34 @@ namespace Growth.BLL.Services
 {
     public class StepService : IStepService
     {
-        private readonly IUnitOfWork _unitOfWork;
-        private readonly IMapper _mapper;
+        private readonly IUnitOfWork unitOfWork;
+        private readonly IMapper mapper;
 
         public StepService(IUnitOfWork unitOfWork, IMapper mapper)
         {
-            _unitOfWork = unitOfWork;
-            _mapper = mapper;
+            this.unitOfWork = unitOfWork;
+            this.mapper = mapper;
         }
 
         public async Task<IEnumerable<StepDto>> GetAllAsync(Guid kidId, Guid pathId, Guid goalId)
         {
-            var path = await _unitOfWork.Paths.GetAsync(kidId, pathId);
+            var path = await unitOfWork.Paths.GetAsync(kidId, pathId);
 
             if (path == null)
             {
                 return new List<StepDto>();
             }
 
-            var steps = await _unitOfWork.Steps.GetByGoalAsync(goalId);
-            var stepDtos = _mapper.Map<IEnumerable<StepDto>>(steps);
+            var steps = await unitOfWork.Steps.GetByGoalAsync(goalId);
+            var stepDtos = mapper.Map<IEnumerable<StepDto>>(steps);
 
             return stepDtos;
         }
 
         public async Task<StepDto> GetAsync(Guid kidId, Guid pathId, Guid goalId, Guid stepId)
         {
-            var path = await _unitOfWork.Paths.GetAsync(kidId, pathId);
-            var step = await _unitOfWork.Steps.GetAsync(goalId, stepId);
+            var path = await unitOfWork.Paths.GetAsync(kidId, pathId);
+            var step = await unitOfWork.Steps.GetAsync(goalId, stepId);
 
             if (path == null || step == null)
             {
@@ -48,15 +48,15 @@ namespace Growth.BLL.Services
                     "Kid");
             }
 
-            var stepDto = _mapper.Map<StepDto>(step);
+            var stepDto = mapper.Map<StepDto>(step);
 
             return stepDto;
         }
 
         public async Task<Guid> CreateAsync(Guid kidId, Guid pathId, Guid goalId, StepDto stepDto)
         {
-            var path = await _unitOfWork.Paths.GetAsync(kidId, pathId);
-            var goal = await _unitOfWork.Goals.GetAsync(pathId, goalId);
+            var path = await unitOfWork.Paths.GetAsync(kidId, pathId);
+            var goal = await unitOfWork.Goals.GetAsync(pathId, goalId);
             if (path == null || goal == null)
             {
                 throw new EntityNotFoundException(
@@ -64,15 +64,15 @@ namespace Growth.BLL.Services
                     "Goal");
             }
 
-            var step = _mapper.Map<Step>(stepDto);
-            var id = await _unitOfWork.Steps.CreateAsync(goalId, step);
+            var step = mapper.Map<Step>(stepDto);
+            var id = await unitOfWork.Steps.CreateAsync(goalId, step);
 
             return id;
         }
 
         public async Task<Guid> UpdateAsync(Guid kidId, Guid pathId, Guid goalId, StepDto stepDto)
         {
-            var path = await _unitOfWork.Paths.GetAsync(kidId, pathId);
+            var path = await unitOfWork.Paths.GetAsync(kidId, pathId);
             if (path == null)
             {
                 throw new EntityNotFoundException(
@@ -80,7 +80,7 @@ namespace Growth.BLL.Services
                     "Path");
             }
 
-            var stepToUpdate = await _unitOfWork.Steps.GetAsync(goalId, stepDto.Id);
+            var stepToUpdate = await unitOfWork.Steps.GetAsync(goalId, stepDto.Id);
             if (stepToUpdate == null)
             {
                 throw new EntityNotFoundException(
@@ -88,15 +88,15 @@ namespace Growth.BLL.Services
                     "Step");
             }
 
-            var step = _mapper.Map<Step>(stepDto);
-            var id = await _unitOfWork.Steps.UpdateAsync(goalId, step);
+            var step = mapper.Map<Step>(stepDto);
+            var id = await unitOfWork.Steps.UpdateAsync(goalId, step);
 
             return id;
         }
 
         public async Task DeleteAsync(Guid kidId, Guid pathId, Guid goalId, Guid stepId)
         {
-            var path = await _unitOfWork.Paths.GetAsync(kidId, pathId);
+            var path = await unitOfWork.Paths.GetAsync(kidId, pathId);
 
             if (path == null)
             {
@@ -105,7 +105,7 @@ namespace Growth.BLL.Services
                     "Path");
             }
 
-            var step = await _unitOfWork.Steps.GetAsync(goalId, stepId);
+            var step = await unitOfWork.Steps.GetAsync(goalId, stepId);
 
             if (step == null)
             {
@@ -114,7 +114,7 @@ namespace Growth.BLL.Services
                     "Step");
             }
 
-            await _unitOfWork.Steps.DeleteAsync(goalId, stepId);
+            await unitOfWork.Steps.DeleteAsync(goalId, stepId);
         }
     }
 }

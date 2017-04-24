@@ -12,12 +12,12 @@ namespace Growth.DAL.Repositories
     public class PathRepository : IPathRepository
     {
         private const string IdFieldName = "_id";
-        private readonly string _pathCollectionName = new Path().CollectionName;
-        private readonly IDbContext _context;
+        private readonly string pathCollectionName = new Path().CollectionName;
+        private readonly IDbContext context;
 
         public PathRepository(IDbContext context)
         {
-            _context = context;
+            this.context = context;
         }
 
         public async Task<IEnumerable<Path>> GetByKidAsync(Guid kidId)
@@ -33,7 +33,7 @@ namespace Growth.DAL.Repositories
             var filterByKid = Builders<Kid>.Filter
                 .Eq(k => k.Id, BsonBinaryData.Create(kidId));
             var filterByPath = Builders<Kid>.Filter
-                .Eq($"{_pathCollectionName}.{IdFieldName}", BsonBinaryData.Create(pathId));
+                .Eq($"{pathCollectionName}.{IdFieldName}", BsonBinaryData.Create(pathId));
 
             var kid = await ReceiveKid(filterByKid & filterByPath);
 
@@ -48,7 +48,7 @@ namespace Growth.DAL.Repositories
             var filter = Builders<Kid>.Filter.Eq(kid => kid.Id, BsonBinaryData.Create(kidId));
             var update = Builders<Kid>.Update.Push(t => t.Paths, path);
 
-            await _context.GetCollection<Kid>().UpdateOneAsync(filter, update);
+            await context.GetCollection<Kid>().UpdateOneAsync(filter, update);
 
             return path.Id;
         }
@@ -56,7 +56,7 @@ namespace Growth.DAL.Repositories
         public async Task<Guid> UpdateAsync(Path path)
         {
             var filter = Builders<Kid>.Filter
-                .Eq($"{_pathCollectionName}.{IdFieldName}", BsonBinaryData.Create(path.Id));
+                .Eq($"{pathCollectionName}.{IdFieldName}", BsonBinaryData.Create(path.Id));
 
             var kid = await ReceiveKid(filter);
             var pathToUpdate = kid?.Paths?.FirstOrDefault(p => p.Id == path.Id);
@@ -74,7 +74,7 @@ namespace Growth.DAL.Repositories
 
             var update = Builders<Kid>.Update.Set(k => k.Paths, kid.Paths);
 
-            await _context.GetCollection<Kid>().UpdateOneAsync(filter, update);
+            await context.GetCollection<Kid>().UpdateOneAsync(filter, update);
 
             return path.Id;
         }
@@ -84,14 +84,14 @@ namespace Growth.DAL.Repositories
             var update = Builders<Kid>.Update
                 .PullFilter(kid => kid.Paths, path => path.Id.Equals(pathId));
             var filter = Builders<Kid>.Filter
-                .Eq($"{_pathCollectionName}.{IdFieldName}", BsonBinaryData.Create(pathId));
+                .Eq($"{pathCollectionName}.{IdFieldName}", BsonBinaryData.Create(pathId));
 
-            return _context.GetCollection<Kid>().FindOneAndUpdateAsync(filter, update);
+            return context.GetCollection<Kid>().FindOneAndUpdateAsync(filter, update);
         }
 
         private async Task<Kid> ReceiveKid(FilterDefinition<Kid> filter)
         {
-            var kids = await _context.GetCollection<Kid>().FindAsync(filter);
+            var kids = await context.GetCollection<Kid>().FindAsync(filter);
             var kid = await kids.FirstOrDefaultAsync();
 
             return kid;
